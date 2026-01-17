@@ -204,7 +204,7 @@ class ElasticSketch:
             else:
                 return self.H[pos].pvote + self.cm.estimate_ml(self.H[pos].f,a,b,c)
         else:
-            return self.cm.estimate_ml(self.H[pos].f)
+            return self.cm.estimate_ml(self.H[pos].f,a,b,c)
 
 
 

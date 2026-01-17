@@ -222,7 +222,7 @@ class PRECISION:
                 ans = self.H[pos][i].cnt
 
         if not flag:
-            ans = self.cm.estimate_ml(key)
+            ans = self.cm.estimate_ml(key,a,b,c)
 
         return ans
 
