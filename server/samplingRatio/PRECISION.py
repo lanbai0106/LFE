@@ -1,11 +1,14 @@
 import numpy as np
 import pandas as pd
 import hashlib
+import math
 from collections import Counter
 import matplotlib.pyplot as plt
+# from ..common import pac,sample_pac_5,sample_pac_10,sample_pac_50,keys_5,keys_10,keys_50,keys,real_freq,real_freq_5,real_freq_10,real_freq_50,rows,get_best_params,powers,calculate_aae,calculate_are
 
 import hashlib
 import random
+
 from collections import Counter
 import numpy as np
 pac = []
@@ -75,8 +78,7 @@ def calculate_aae(true, estimate):
 def calculate_are(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)) / np.array(true))
 
-
-class CUSketch:
+class CountMinSketch:
     def __init__(self, num_rows, num_cols):
 
         self.num_rows = num_rows
@@ -96,17 +98,18 @@ class CUSketch:
         return hash_function
 
     def update(self, item, count=1):
-        min_estimate = float('inf')
-        pos_list = []
-        for i in range(self.num_rows):
-            hash_value = int(self.hash_functions[i](item), 16) % self.num_cols
-            pos_list.append(hash_value)
-            min_estimate = min(min_estimate, self.table[i][hash_value])
 
         for i in range(self.num_rows):
-            hash_value = pos_list[i]
-            if self.table[i][hash_value] == min_estimate:
-                self.table[i][hash_value] += count
+            hash_value = int(self.hash_functions[i](item), 16) % self.num_cols
+            self.table[i][hash_value] += count
+
+    def estimate(self, item):
+
+        min_estimate = float('inf')
+        for i in range(self.num_rows):
+            hash_value = int(self.hash_functions[i](item), 16) % self.num_cols
+            min_estimate = min(min_estimate, self.table[i][hash_value])
+        return min_estimate
 
     def estimate_ml(self, item,a,b,c):
         param_list = [a,b,c]
@@ -122,14 +125,6 @@ class CUSketch:
             return min_ml_est
         return min_estimate
 
-    def estimate_ml(self, item, a, b, c):
-        param_list = [a, b, c]
-        min_estimate = float('inf')
-        for i in range(self.num_rows):
-            hash_value = int(self.hash_functions[i](item), 16) % self.num_cols
-            min_estimate = min(min_estimate, int(self.table[i][hash_value] / param_list[i]))
-        return min_estimate
-
     def get_counters(self, item):
         v_list = []
         for i in range(self.num_rows):
@@ -139,17 +134,115 @@ class CUSketch:
 
 
 
-total_memory = 200
+class PBucket:
+    def __init__(self):
+        self.f = 0
+        self.cnt = 0
+MAX_PRIME32 = 2**32 - 1
+class BOBHash32:
+    def __init__(self, seed):
+        self.seed = seed
+
+    def run(self, data):
+        # 使用 hashlib 的 MD5 模拟哈希函数（可以根据需要更换为实际的哈希算法）
+        hash_obj = hashlib.md5(data)
+        hash_obj.update(str(self.seed).encode('utf-8'))
+        return int(hash_obj.hexdigest(), 16) % MAX_PRIME32
+class PRECISION:
+    def __init__(self, l, k, d, m):
+        self.l = l
+        self.k = k
+        self.d = d
+        self.m = m
+        self.min_stage = -1
+        self.H = [[PBucket() for _ in range(k)] for _ in range(l)]
+        self.cm = CountMinSketch(m, d)
+
+        self.hashx = BOBHash32(random.randint(0, MAX_PRIME32))
+        self.hash = [BOBHash32(random.randint(0, MAX_PRIME32)) for _ in range(d)]
+
+
+    def update(self, key, count=1):
+        pos = self.hashx.run(key) % self.l
+
+        if self.min_stage != -1:
+            self.cm.update(self.H[pos][self.min_stage].f, self.H[pos][self.min_stage].cnt)
+            self.H[pos][self.min_stage].f = key
+            self.H[pos][self.min_stage].cnt = self.new_val
+            self.min_stage = -1
+
+        flag = False
+        minn = 1e9
+        for i in range(self.k):
+            if self.H[pos][i].f == 0:
+                flag = True
+                self.H[pos][i].f = key
+                self.H[pos][i].cnt = 1
+            elif self.H[pos][i].f == key:
+                self.H[pos][i].cnt += 1
+                flag = True
+            else:
+                if self.H[pos][i].cnt < minn:
+                    minn = self.H[pos][i].cnt
+                    self.min_stage = i
+
+        if not flag:
+            log2_value = math.log2(minn)
+            rounded_up = math.ceil(log2_value)
+            self.new_val = 1 << rounded_up
+            if random.randint(0, self.new_val - 1) == 0:
+                return self.update(key)
+            else:
+                self.cm.update(key, 1)
+        else:
+            self.min_stage = -1
+
+    def estimate(self, key):
+        ans = None
+        pos = self.hashx.run(key) % self.l
+        flag = False
+        for i in range(self.k):
+            if self.H[pos][i].f == key:
+                flag = True
+                ans = self.H[pos][i].cnt
+
+        if not flag:
+            ans = self.cm.estimate(key)
+
+        return ans
+
+    def estimate_ml(self, key,a,b,c):
+        ans = None
+        pos = self.hashx.run(key) % self.l
+        flag = False
+        for i in range(self.k):
+            if self.H[pos][i].f == key:
+                flag = True
+                ans = self.H[pos][i].cnt
+
+        if not flag:
+            ans = self.cm.estimate_ml(key)
+
+        return ans
+
+
+
+total_memory = 100
 total_memory *= 1024*8
-cm_cols = int(total_memory/rows/16)
+heavy_ratio = 0.3
+heavy_mem = int(total_memory * heavy_ratio)
+light_mem = total_memory - heavy_mem
+
+l = heavy_mem//(32+16)
+cm_cols = int(light_mem/rows)
 ratio_list = [0.2,0.1,0.02]
 cm_ml_cols_lsit = []
 for ratio in ratio_list:
     cm_ml_cols_lsit.append(int(cm_cols*ratio))
-cm = CUSketch(rows, cm_cols)
-cm_ml_5 = CUSketch(num_rows=rows, num_cols=cm_ml_cols_lsit[0])
-cm_ml_10 = CUSketch(num_rows=rows, num_cols=cm_ml_cols_lsit[1])
-cm_ml_50 = CUSketch(num_rows=rows, num_cols=cm_ml_cols_lsit[2])
+cm = PRECISION(l,4,rows, cm_cols)
+cm_ml_5 = PRECISION(l,4,rows, cm_ml_cols_lsit[0])
+cm_ml_10 = PRECISION(l,4,rows, cm_ml_cols_lsit[1])
+cm_ml_50 = PRECISION(l,4,rows, cm_ml_cols_lsit[2])
 
 for i, p in enumerate(pac):
     if i % 5 == 0:
@@ -171,17 +264,17 @@ y_10 = []
 X_50 = []
 y_50 = []
 for item in keys_5:
-    X = cm_ml_5.get_counters(item)
+    X = cm_ml_5.cm.get_counters(item)
     X_5.append(X)
     y_5.append(real_freq_5[item])
 
 for item in keys_10:
-    X = cm_ml_10.get_counters(item)
+    X = cm_ml_10.cm.get_counters(item)
     X_10.append(X)
     y_10.append(real_freq_10[item])
 
 for item in keys_50:
-    X = cm_ml_50.get_counters(item)
+    X = cm_ml_50.cm.get_counters(item)
     X_50.append(X)
     y_50.append(real_freq_50[item])
 

@@ -235,7 +235,7 @@ print("ARE for cm_ml_10_frequency:", are_cm_ml_10)
 print("ARE for cm_ml_50_frequency:", are_cm_ml_50)
 
 plt.plot(true_frequency[:1000], linewidth=6, label="True Frequency")
-plt.plot(cm_frequency[:1000], linewidth= 2, label="CM Frequency")
+# plt.plot(cm_frequency[:1000], linewidth= 2, label="CM Frequency")
 plt.plot(cm_ml_5_frequency[:1000], linewidth=2, label="CM ML 5 Frequency")
 plt.legend()
 plt.show()
