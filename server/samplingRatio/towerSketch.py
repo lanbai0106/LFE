@@ -4,11 +4,9 @@ import hashlib
 from collections import Counter
 import matplotlib.pyplot as plt
 # from ..common import pac,sample_pac_5,sample_pac_10,sample_pac_50,keys_5,keys_10,keys_50,keys,real_freq,real_freq_5,real_freq_10,real_freq_50,rows,get_best_params,powers,calculate_aae,calculate_are
-# # import ..common.py
-# from ..sketch.CMSketch import CountMinSketch
+
 import hashlib
 import random
-
 
 from collections import Counter
 import numpy as np
@@ -21,7 +19,7 @@ keys_10 = set()
 keys_50 = set()
 keys = set()
 cnt = 0
-with open("../../cpu/data/stackoverflow.txt", "r", encoding="utf-8") as f:
+with open("../cpu/data/stackoverflow.txt", "r", encoding="utf-8") as f:
     for line in f:
         parts = line.strip().split()
         if len(parts) >= 2:
@@ -78,15 +76,14 @@ def calculate_aae(true, estimate):
 
 def calculate_are(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)) / np.array(true))
-
-
-class CountMinSketch:
-    def __init__(self, num_rows, num_cols):
+class TowerSketch:
+    def __init__(self, num_rows, col_bits):
 
         self.num_rows = num_rows
-        self.num_cols = num_cols
+        self.bit_list = [4,8,16]
+        self.num_cols_list = [int(col_bits/4),int(col_bits/8),int(col_bits/16)]
 
-        self.table = [[0] * num_cols for _ in range(num_rows)]
+        self.table = [[0] * self.num_cols_list[_] for _ in range(num_rows)]
 
         self.hash_functions = [self._create_hash_function(i) for i in range(num_rows)]
 
@@ -103,14 +100,16 @@ class CountMinSketch:
 
         for i in range(self.num_rows):
             hash_value = int(self.hash_functions[i](item), 16) % self.num_cols
-            self.table[i][hash_value] += count
+            if self.table[i][hash_value] + 1 < (2**self.bit_list[i]):
+                self.table[i][hash_value] += count
 
     def estimate(self, item):
 
         min_estimate = float('inf')
         for i in range(self.num_rows):
             hash_value = int(self.hash_functions[i](item), 16) % self.num_cols
-            min_estimate = min(min_estimate, self.table[i][hash_value])
+            if self.table[i][hash_value]  < (2 ** self.bit_list[i]):
+                min_estimate = min(min_estimate, self.table[i][hash_value])
         return min_estimate
 
     def estimate_ml(self, item,a,b,c):
@@ -120,9 +119,10 @@ class CountMinSketch:
         min_ml_est = float('inf')
         for i in range(self.num_rows):
             hash_value = int(self.hash_functions[i](item), 16) % self.num_cols
-            min_estimate = min(min_estimate, int(self.table[i][hash_value]))
-            max_estimate = max(max_estimate, int(self.table[i][hash_value]))
-            min_ml_est = min(min_ml_est,int(self.table[i][hash_value])/param_list[i])
+            if self.table[i][hash_value] < (2 ** self.bit_list[i]):
+                min_estimate = min(min_estimate, int(self.table[i][hash_value]))
+                max_estimate = max(max_estimate, int(self.table[i][hash_value]))
+                min_ml_est = min(min_ml_est,int(self.table[i][hash_value])/param_list[i])
         if max_estimate - min_estimate > 100 and min_estimate < 2000:
             return min_ml_est
         return min_estimate
@@ -131,23 +131,25 @@ class CountMinSketch:
         v_list = []
         for i in range(self.num_rows):
             hash_value = int(self.hash_functions[i](item), 16) % self.num_cols
-            v_list.append(int(self.table[i][hash_value]))
+            if self.table[i][hash_value]  < (2 ** self.bit_list[i]):
+                v_list.append(int(self.table[i][hash_value]))
+            else:
+                v_list.append(999999999)
         return v_list
 
 
 
-
-total_memory = 300
-total_memory *= 1024 * 8
-cm_cols = int(total_memory / rows / 16)
-ratio_list = [0.2, 0.1, 0.02]
+total_memory = 100
+total_memory *= 1024*8
+cm_cols = int(total_memory/rows)
+ratio_list = [0.2,0.1,0.02]
 cm_ml_cols_lsit = []
 for ratio in ratio_list:
-    cm_ml_cols_lsit.append(int(cm_cols * ratio))
-cm = CountMinSketch(rows, cm_cols)
-cm_ml_5 = CountMinSketch(num_rows=rows, num_cols=cm_ml_cols_lsit[0])
-cm_ml_10 = CountMinSketch(num_rows=rows, num_cols=cm_ml_cols_lsit[1])
-cm_ml_50 = CountMinSketch(num_rows=rows, num_cols=cm_ml_cols_lsit[2])
+    cm_ml_cols_lsit.append(int(cm_cols*ratio))
+cm = TowerSketch(rows, cm_cols)
+cm_ml_5 = TowerSketch(rows, cm_ml_cols_lsit[0])
+cm_ml_10 = TowerSketch(rows, cm_ml_cols_lsit[1])
+cm_ml_50 = TowerSketch(rows, cm_ml_cols_lsit[2])
 
 for i, p in enumerate(pac):
     if i % 5 == 0:
@@ -194,6 +196,7 @@ best_c_10 = None
 best_a_50 = None
 best_b_50 = None
 best_c_50 = None
+
 best_a_5,best_b_5,best_c_5 = get_best_params(X_5,y_5)
 best_a_10,best_b_10,best_c_10 = get_best_params(X_10,y_10)
 best_a_50,best_b_50,best_c_50 = get_best_params(X_50,y_50)
@@ -233,9 +236,3 @@ print("ARE for cm_frequency:", are_cm)
 print("ARE for cm_ml_5_frequency:", are_cm_ml_5)
 print("ARE for cm_ml_10_frequency:", are_cm_ml_10)
 print("ARE for cm_ml_50_frequency:", are_cm_ml_50)
-
-plt.plot(true_frequency[:1000], linewidth=6, label="True Frequency")
-plt.plot(cm_frequency[:1000], linewidth= 2, label="CM Frequency")
-plt.plot(cm_ml_5_frequency[:1000], linewidth=2, label="CM ML 5 Frequency")
-plt.legend()
-plt.show()
