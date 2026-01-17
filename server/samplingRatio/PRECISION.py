@@ -52,7 +52,7 @@ real_freq_50 = Counter(sample_pac_50)
 rows = 3
 
 
-powers = [2**k for k in range(0, 6)]  # 2^0 到 2^15
+powers = [2**k for k in range(0, 6)]
 
 
 def get_best_params(X, y):
@@ -144,8 +144,9 @@ class BOBHash32:
         self.seed = seed
 
     def run(self, data):
-        # 使用 hashlib 的 MD5 模拟哈希函数（可以根据需要更换为实际的哈希算法）
-        hash_obj = hashlib.md5(data)
+
+        data_bytes = data.encode('utf-8')
+        hash_obj = hashlib.md5(data_bytes)
         hash_obj.update(str(self.seed).encode('utf-8'))
         return int(hash_obj.hexdigest(), 16) % MAX_PRIME32
 class PRECISION:

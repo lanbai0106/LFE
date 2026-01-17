@@ -143,10 +143,10 @@ class BOBHash32:
         self.seed = seed
 
     def run(self, data):
-        # 将字符串 data 转换为字节，使用 encode()
-        data_bytes = data.encode('utf-8')  # 将字符串转换为字节
-        hash_obj = hashlib.md5(data_bytes)  # 计算哈希
-        hash_obj.update(str(self.seed).encode('utf-8'))  # 将 seed 也转换为字节并更新哈希
+
+        data_bytes = data.encode('utf-8')
+        hash_obj = hashlib.md5(data_bytes)
+        hash_obj.update(str(self.seed).encode('utf-8'))
         return int(hash_obj.hexdigest(), 16) % MAX_PRIME32
 class ElasticSketch:
     def __init__(self, l, d, m):
@@ -158,7 +158,7 @@ class ElasticSketch:
         self.H = [EBucket() for _ in range(self.l)]
         self.cm = CountMinSketch(d, m)
 
-        # 初始化哈希函数
+
         self.hashx = BOBHash32(random.randint(0, MAX_PRIME32))
         self.hash = [BOBHash32(random.randint(0, MAX_PRIME32)) for _ in range(d)]
 
