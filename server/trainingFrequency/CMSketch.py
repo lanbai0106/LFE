@@ -122,10 +122,12 @@ def get_best_params(X, y):
 
                 for (x1, x2, x3), yi in zip(X, y):
                     y_hat = min(x1 / a, x2 / b, x3 / c)
+                    # Conservative training method
                     # if yi > y_hat:
                     #     total_error = float('inf')
                     # else:
                     #     total_error += (y_hat - yi)/yi
+                    # Minimize the error
                     total_error += (y_hat - yi) / yi
 
                 if total_error < best_error:
@@ -268,3 +270,21 @@ print("AAE for cm_ml_once_frequency:", aae_list_ml_once)
 print("ARE for cm_frequency:", are_list)
 print("ARE for cm_ml_5_frequency:", are_list_ml)
 print("ARE for cm_ml_once_frequency:", are_list_ml_once)
+
+plt.plot(aae_list, linewidth=2, label="CM")
+plt.plot(aae_list_ml, linewidth=2, label="CM ML 5")
+plt.plot(aae_list_ml_once, linewidth=2, label="CM ML once")
+plt.legend()
+plt.show()
+
+plt.plot(aae_list, linewidth=2, label="CM")
+plt.plot(aae_list_ml, linewidth=2, label="CM ML 5")
+plt.plot(aae_list_ml_once, linewidth=2, label="CM ML once")
+plt.legend()
+plt.show()
+
+plt.plot(are_list, linewidth=2, label="CM")
+plt.plot(are_list_ml, linewidth=2, label="CM ML 5")
+plt.plot(are_list_ml_once, linewidth=2, label="CM ML once")
+plt.legend()
+plt.show()
