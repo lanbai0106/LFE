@@ -20,7 +20,7 @@ keys_10 = set()
 keys_50 = set()
 keys = set()
 cnt = 0
-with open("../../cpu/data/stackoverflow.txt", "r", encoding="utf-8") as f:
+with open("../../cpu/data/CAIDA19.txt", "r", encoding="utf-8") as f:
     for line in f:
         parts = line.strip().split()
         if len(parts) >= 2:
@@ -155,9 +155,10 @@ class PRECISION:
         self.k = k
         self.d = d
         self.m = m
+        self.new_val = None
         self.min_stage = -1
         self.H = [[PBucket() for _ in range(k)] for _ in range(l)]
-        self.cm = CountMinSketch(m, d)
+        self.cm = CountMinSketch(d, m)
 
         self.hashx = BOBHash32(random.randint(0, MAX_PRIME32))
         self.hash = [BOBHash32(random.randint(0, MAX_PRIME32)) for _ in range(d)]
@@ -171,32 +172,32 @@ class PRECISION:
             self.H[pos][self.min_stage].f = key
             self.H[pos][self.min_stage].cnt = self.new_val
             self.min_stage = -1
-
-        flag = False
-        minn = 1e9
-        for i in range(self.k):
-            if self.H[pos][i].f == 0:
-                flag = True
-                self.H[pos][i].f = key
-                self.H[pos][i].cnt = 1
-            elif self.H[pos][i].f == key:
-                self.H[pos][i].cnt += 1
-                flag = True
-            else:
-                if self.H[pos][i].cnt < minn:
-                    minn = self.H[pos][i].cnt
-                    self.min_stage = i
-
-        if not flag:
-            log2_value = math.log2(minn)
-            rounded_up = math.ceil(log2_value)
-            self.new_val = 1 << rounded_up
-            if random.randint(0, self.new_val - 1) == 0:
-                return self.update(key)
-            else:
-                self.cm.update(key, 1)
         else:
-            self.min_stage = -1
+            flag = False
+            minn = 1e9
+            for i in range(self.k):
+                if self.H[pos][i].f == 0:
+                    flag = True
+                    self.H[pos][i].f = key
+                    self.H[pos][i].cnt = 1
+                elif self.H[pos][i].f == key:
+                    self.H[pos][i].cnt += 1
+                    flag = True
+                else:
+                    if self.H[pos][i].cnt < minn:
+                        minn = self.H[pos][i].cnt
+                        self.min_stage = i
+
+            if not flag:
+                log2_value = math.log2(minn)
+                rounded_up = math.ceil(log2_value)
+                self.new_val = 1 << rounded_up
+                if random.randint(0, self.new_val - 1) == 0:
+                    return self.update(key)
+                else:
+                    self.cm.update(key, 1)
+            else:
+                self.min_stage = -1
 
     def estimate(self, key):
         ans = None
@@ -266,18 +267,27 @@ X_50 = []
 y_50 = []
 for item in keys_5:
     X = cm_ml_5.cm.get_counters(item)
-    X_5.append(X)
-    y_5.append(real_freq_5[item])
+    minn = min(X)
+    maxx = max(X)
+    if maxx - minn > threshold and minn < 2000:
+        X_5.append(X)
+        y_5.append(real_freq_5[item])
 
 for item in keys_10:
     X = cm_ml_10.cm.get_counters(item)
-    X_10.append(X)
-    y_10.append(real_freq_10[item])
+    minn = min(X)
+    maxx = max(X)
+    if maxx - minn > threshold and minn < 2000:
+        X_10.append(X)
+        y_10.append(real_freq_10[item])
 
 for item in keys_50:
     X = cm_ml_50.cm.get_counters(item)
-    X_50.append(X)
-    y_50.append(real_freq_50[item])
+    minn = min(X)
+    maxx = max(X)
+    if maxx - minn > threshold and minn < 2000:
+        X_50.append(X)
+        y_50.append(real_freq_50[item])
 
 best_a_5 = None
 best_b_5 = None
@@ -332,8 +342,54 @@ print("ARE for cm_ml_10_frequency:", are_cm_ml_10)
 print("ARE for cm_ml_50_frequency:", are_cm_ml_50)
 
 
-plt.plot(true_frequency[:1000], linewidth=6, label="True Frequency")
-# plt.plot(cm_frequency[:1000], linewidth= 2, label="CM Frequency")
-plt.plot(cm_ml_5_frequency[:1000], linewidth=2, label="CM ML 5 Frequency")
-plt.legend()
+# plt.plot(true_frequency[:1000], linewidth=6, label="True Frequency")
+# # plt.plot(cm_frequency[:1000], linewidth= 2, label="CM Frequency")
+# plt.plot(cm_ml_5_frequency[:1000], linewidth=2, label="CM ML 5 Frequency")
+# plt.legend()
+# plt.show()
+
+plt.rcParams['pdf.fonttype'] = 42
+plt.rcParams['font.family'] = 'Times New Roman'
+plt.rcParams['font.size'] = 20
+
+combined = list(zip(true_frequency, cm_ml_5_frequency,cm_frequency))
+random.shuffle(combined)
+true_frequency, cm_ml_5_frequency, cm_frequency = zip(*combined)
+actual = true_frequency[:10000]
+estimated = cm_ml_5_frequency[:10000]
+
+plt.figure(figsize=(4, 3))
+plt.plot(actual, estimated, '+', color='k', markersize=4)
+
+x = np.linspace(0, int(np.max(actual)) )
+plt.plot(x, x, 'b-', linewidth=2)
+
+plt.xlabel('PRE Actual Frequency', fontsize=16)
+plt.ylabel('PRE Estimated Frequency (ML)', fontsize=16)
+plt.tick_params(labelsize=20)
+
+plt.tight_layout()
+# plt.savefig('images/'+path+'.png', dpi=300, bbox_inches='tight')
 plt.show()
+
+
+# combined = list(zip(true_frequency, cm_frequency))
+# random.shuffle(combined)
+# true_frequency, cm_frequency = zip(*combined)
+actual = true_frequency[:10000]
+estimated = cm_frequency[:10000]
+
+plt.figure(figsize=(4, 3))
+plt.plot(actual, estimated, '+', color='k', markersize=4)
+
+x = np.linspace(0, int(np.max(actual)) )
+plt.plot(x, x, 'b-', linewidth=2)
+
+plt.xlabel('PRE Actual Frequency', fontsize=16)
+plt.ylabel('PRE Estimated Frequency', fontsize=16)
+plt.tick_params(labelsize=20)
+
+plt.tight_layout()
+# plt.savefig('images/'+path+'.png', dpi=300, bbox_inches='tight')
+plt.show()
+

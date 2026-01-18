@@ -17,7 +17,7 @@ keys_10 = set()
 keys_50 = set()
 keys = set()
 cnt = 0
-with open("../../cpu/data/stackoverflow.txt", "r", encoding="utf-8") as f:
+with open("../../cpu/data/CAIDA19.txt", "r", encoding="utf-8") as f:
     for line in f:
         parts = line.strip().split()
         if len(parts) >= 2:
@@ -122,12 +122,11 @@ class CUSketch:
             return min_ml_est
         return min_estimate
 
-    def estimate_ml(self, item, a, b, c):
-        param_list = [a, b, c]
+    def estimate(self, item):
         min_estimate = float('inf')
         for i in range(self.num_rows):
             hash_value = int(self.hash_functions[i](item), 16) % self.num_cols
-            min_estimate = min(min_estimate, int(self.table[i][hash_value] / param_list[i]))
+            min_estimate = min(min_estimate, int(self.table[i][hash_value]))
         return min_estimate
 
     def get_counters(self, item):
@@ -139,7 +138,7 @@ class CUSketch:
 
 
 
-total_memory = 200
+total_memory = 100
 total_memory *= 1024*8
 cm_cols = int(total_memory/rows/16)
 ratio_list = [0.2,0.1,0.02]
@@ -160,7 +159,7 @@ for i, p in enumerate(pac):
         cm_ml_50.update(p)
     cm.update(p)
 
-threshold = 100
+threshold = 500
 
 X_5 = []
 y_5 = []
@@ -172,18 +171,27 @@ X_50 = []
 y_50 = []
 for item in keys_5:
     X = cm_ml_5.get_counters(item)
-    X_5.append(X)
-    y_5.append(real_freq_5[item])
+    minn = min(X)
+    maxx = max(X)
+    if maxx - minn > threshold and minn < 2000:
+        X_5.append(X)
+        y_5.append(real_freq_5[item])
 
 for item in keys_10:
     X = cm_ml_10.get_counters(item)
-    X_10.append(X)
-    y_10.append(real_freq_10[item])
+    minn = min(X)
+    maxx = max(X)
+    if maxx - minn > threshold and minn < 2000:
+        X_10.append(X)
+        y_10.append(real_freq_10[item])
 
 for item in keys_50:
     X = cm_ml_50.get_counters(item)
-    X_50.append(X)
-    y_50.append(real_freq_50[item])
+    minn = min(X)
+    maxx = max(X)
+    if maxx - minn > threshold and minn < 2000:
+        X_50.append(X)
+        y_50.append(real_freq_50[item])
 
 best_a_5 = None
 best_b_5 = None
@@ -237,8 +245,50 @@ print("ARE for cm_ml_5_frequency:", are_cm_ml_5)
 print("ARE for cm_ml_10_frequency:", are_cm_ml_10)
 print("ARE for cm_ml_50_frequency:", are_cm_ml_50)
 
-plt.plot(true_frequency[:1000], linewidth=6, label="True Frequency")
-# plt.plot(cm_frequency[:1000], linewidth= 2, label="CM Frequency")
-plt.plot(cm_ml_5_frequency[:1000], linewidth=2, label="CM ML 5 Frequency")
-plt.legend()
+# plt.plot(true_frequency[:1000], linewidth=6, label="True Frequency")
+# # plt.plot(cm_frequency[:1000], linewidth= 2, label="CM Frequency")
+# plt.plot(cm_ml_5_frequency[:1000], linewidth=2, label="CM ML 5 Frequency")
+# plt.legend()
+# plt.show()
+
+plt.rcParams['pdf.fonttype'] = 42
+plt.rcParams['font.family'] = 'Times New Roman'
+plt.rcParams['font.size'] = 20
+
+combined = list(zip(true_frequency, cm_ml_5_frequency,cm_frequency))
+random.shuffle(combined)
+true_frequency, cm_ml_5_frequency,cm_frequency = zip(*combined)
+actual = true_frequency[:10000]
+estimated = cm_ml_5_frequency[:10000]
+
+plt.figure(figsize=(4, 3))
+plt.plot(actual, estimated, '+', color='k', markersize=4)
+
+x = np.linspace(0, int(np.max(actual)) )
+plt.plot(x, x, 'b-', linewidth=2)
+
+plt.xlabel('CU Actual Frequency', fontsize=16)
+plt.ylabel('CU Estimated Frequency (ML)', fontsize=16)
+plt.tick_params(labelsize=20)
+
+plt.tight_layout()
+# plt.savefig('images/'+path+'.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+
+actual = true_frequency[:10000]
+estimated = cm_frequency[:10000]
+
+plt.figure(figsize=(4, 3))
+plt.plot(actual, estimated, '+', color='k', markersize=4)
+
+x = np.linspace(0, int(np.max(actual)) )
+plt.plot(x, x, 'b-', linewidth=2)
+
+plt.xlabel('CU Actual Frequency', fontsize=16)
+plt.ylabel('CU Estimated Frequency', fontsize=16)
+plt.tick_params(labelsize=20)
+
+plt.tight_layout()
+# plt.savefig('images/'+path+'.png', dpi=300, bbox_inches='tight')
 plt.show()
