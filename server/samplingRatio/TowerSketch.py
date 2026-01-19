@@ -85,8 +85,8 @@ class TowerSketch:
     def __init__(self, num_rows, col_bits):
 
         self.num_rows = num_rows
-        self.bit_list = [8,16,32]
-        self.num_cols_list = [int(col_bits/8),int(col_bits/16),int(col_bits/32)]
+        self.bit_list = [8,16,64]
+        self.num_cols_list = [int(col_bits/8),int(col_bits/16),int(col_bits/64)]
 
         self.table = [[0] * self.num_cols_list[_] for _ in range(num_rows)]
 
@@ -105,7 +105,7 @@ class TowerSketch:
 
         for i in range(self.num_rows):
             hash_value = int(self.hash_functions[i](item), 16) % self.num_cols_list[i]
-            if self.table[i][hash_value]  < (2**self.bit_list[i]):
+            if self.table[i][hash_value]  < (2**self.bit_list[i]) - 1:
                 self.table[i][hash_value] += count
 
     def estimate(self, item):
@@ -113,7 +113,7 @@ class TowerSketch:
         min_estimate = float('inf')
         for i in range(self.num_rows):
             hash_value = int(self.hash_functions[i](item), 16) % self.num_cols_list[i]
-            if self.table[i][hash_value]  < (2 ** self.bit_list[i]):
+            if self.table[i][hash_value]  < (2 ** self.bit_list[i]) - 1:
                 min_estimate = min(min_estimate, self.table[i][hash_value])
         return min_estimate
 
@@ -124,7 +124,7 @@ class TowerSketch:
         min_ml_est = float('inf')
         for i in range(self.num_rows):
             hash_value = int(self.hash_functions[i](item), 16) % self.num_cols_list[i]
-            if self.table[i][hash_value] < (2 ** self.bit_list[i]):
+            if self.table[i][hash_value] < (2 ** self.bit_list[i]) - 1:
                 min_estimate = min(min_estimate, int(self.table[i][hash_value]))
                 max_estimate = max(max_estimate, int(self.table[i][hash_value]))
                 min_ml_est = min(min_ml_est,int(self.table[i][hash_value])/param_list[i])
@@ -136,7 +136,7 @@ class TowerSketch:
         v_list = []
         for i in range(self.num_rows):
             hash_value = int(self.hash_functions[i](item), 16) % self.num_cols_list[i]
-            if self.table[i][hash_value]  < (2 ** self.bit_list[i]):
+            if self.table[i][hash_value]  < (2 ** self.bit_list[i]) - 1:
                 v_list.append(int(self.table[i][hash_value]))
             else:
                 v_list.append(999999999999)

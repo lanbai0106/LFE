@@ -235,7 +235,7 @@ class PRECISION:
         for i in range(self.k):
             if self.H[pos][i].f == key:
                 flag = True
-                ans = self.H[pos][i].cnt
+                ans = self.H[pos][i].cnt,0
 
         if not flag:
             ans = self.cm.estimate_ml(key,a,b,c)

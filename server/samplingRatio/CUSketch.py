@@ -225,6 +225,7 @@ cm_ml_50_frequency = []
 cnt5_1,cnt5_2,cnt10_1,cnt10_2,cnt50_1,cnt50_2 = 0,0,0,0,0,0
 for item in keys:
     true_frequency.append(real_freq[item])
+
     cm_frequency.append(cm.estimate(item))
     res,flag = cm.estimate_ml(item,best_a_5,best_b_5,best_c_5)
     cm_ml_5_frequency.append(res)
