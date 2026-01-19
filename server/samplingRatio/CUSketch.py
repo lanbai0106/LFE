@@ -62,7 +62,11 @@ def get_best_params(X, y):
 
                 for (x1, x2, x3), yi in zip(X, y):
                     y_hat = min(x1 / a, x2 / b, x3 / c)
-                    total_error += abs(yi - y_hat)
+                    if yi > y_hat:
+                        total_error = float('inf')
+                    else:
+                        total_error += (y_hat - yi) / yi
+                    # total_error += abs(yi - y_hat)
 
                 if total_error < best_error:
                     best_error = total_error
@@ -118,9 +122,9 @@ class CUSketch:
             min_estimate = min(min_estimate, int(self.table[i][hash_value]))
             max_estimate = max(max_estimate, int(self.table[i][hash_value]))
             min_ml_est = min(min_ml_est,int(self.table[i][hash_value])/param_list[i])
-        if max_estimate - min_estimate > 100 and min_estimate < 2000:
-            return min_ml_est
-        return min_estimate
+        if max_estimate - min_estimate > 1000 and min_estimate < 1000:
+            return min_ml_est,1
+        return min_estimate,0
 
     def estimate(self, item):
         min_estimate = float('inf')
@@ -159,7 +163,7 @@ for i, p in enumerate(pac):
         cm_ml_50.update(p)
     cm.update(p)
 
-threshold = 500
+threshold = 1000
 
 X_5 = []
 y_5 = []
@@ -173,7 +177,7 @@ for item in keys_5:
     X = cm_ml_5.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 2000:
+    if maxx - minn > threshold and minn < 200:
         X_5.append(X)
         y_5.append(real_freq_5[item])
 
@@ -181,7 +185,7 @@ for item in keys_10:
     X = cm_ml_10.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 2000:
+    if maxx - minn > threshold and minn < 200:
         X_10.append(X)
         y_10.append(real_freq_10[item])
 
@@ -189,7 +193,7 @@ for item in keys_50:
     X = cm_ml_50.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 2000:
+    if maxx - minn > threshold and minn < 200:
         X_50.append(X)
         y_50.append(real_freq_50[item])
 
@@ -218,12 +222,32 @@ cm_ml_5_frequency = []
 cm_ml_10_frequency = []
 cm_ml_50_frequency = []
 
+cnt5_1,cnt5_2,cnt10_1,cnt10_2,cnt50_1,cnt50_2 = 0,0,0,0,0,0
 for item in keys:
     true_frequency.append(real_freq[item])
     cm_frequency.append(cm.estimate(item))
-    cm_ml_5_frequency.append(cm.estimate_ml(item,best_a_5,best_b_5,best_c_5))
-    cm_ml_10_frequency.append(cm.estimate_ml(item,best_a_10,best_b_10,best_c_10))
-    cm_ml_50_frequency.append(cm.estimate_ml(item,best_a_50,best_b_50,best_c_50))
+    res,flag = cm.estimate_ml(item,best_a_5,best_b_5,best_c_5)
+    cm_ml_5_frequency.append(res)
+    if flag == 1:
+        if res >= real_freq[item]:
+            cnt5_1 += 1
+        else:
+            cnt5_2 += 1
+    res,flag = cm.estimate_ml(item,best_a_10,best_b_10,best_c_10)
+    cm_ml_10_frequency.append(res)
+    if flag == 1:
+        if res >= real_freq[item]:
+            cnt10_1 += 1
+        else:
+            cnt10_2 += 1
+    res,flag = cm.estimate_ml(item,best_a_50,best_b_50,best_c_50)
+    cm_ml_50_frequency.append(res)
+    if flag == 1:
+        if res >= real_freq[item]:
+            cnt50_1 += 1
+        else:
+            cnt50_2 += 1
+
 
 
 aae_cm = calculate_aae(true_frequency, cm_frequency)
@@ -236,14 +260,22 @@ are_cm_ml_10 = calculate_are(true_frequency, cm_ml_10_frequency)
 are_cm_ml_50 = calculate_are(true_frequency, cm_ml_50_frequency)
 
 print("AAE for cm_frequency:", aae_cm)
-print("AAE for cm_ml_5_frequency:", aae_cm_ml_5)
-print("AAE for cm_ml_10_frequency:", aae_cm_ml_10)
-print("AAE for cm_ml_50_frequency:", aae_cm_ml_50)
+print("AAE for cm_ml_5_frequency:", aae_cm_ml_5, (aae_cm - aae_cm_ml_5)/aae_cm)
+print("AAE for cm_ml_10_frequency:", aae_cm_ml_10,(aae_cm - aae_cm_ml_10)/aae_cm)
+print("AAE for cm_ml_50_frequency:", aae_cm_ml_50,(aae_cm - aae_cm_ml_50)/aae_cm)
 
 print("ARE for cm_frequency:", are_cm)
-print("ARE for cm_ml_5_frequency:", are_cm_ml_5)
-print("ARE for cm_ml_10_frequency:", are_cm_ml_10)
-print("ARE for cm_ml_50_frequency:", are_cm_ml_50)
+print("ARE for cm_ml_5_frequency:", are_cm_ml_5,(are_cm - are_cm_ml_5)/are_cm)
+print("ARE for cm_ml_10_frequency:", are_cm_ml_10,(are_cm - are_cm_ml_10)/are_cm)
+print("ARE for cm_ml_50_frequency:", are_cm_ml_50,(are_cm - are_cm_ml_50)/are_cm)
+
+print("cm_ml_5_true:", cnt5_1)
+print("for cm_ml_10_true:", cnt10_1)
+print("for cm_ml_50_true:", cnt50_1)
+
+print("cm_ml_5_false:", cnt5_2)
+print("for cm_ml_10_false:", cnt10_2)
+print("for cm_ml_50_false:", cnt50_2)
 
 # plt.plot(true_frequency[:1000], linewidth=6, label="True Frequency")
 # # plt.plot(cm_frequency[:1000], linewidth= 2, label="CM Frequency")
