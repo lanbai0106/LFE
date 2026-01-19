@@ -82,6 +82,7 @@ struct PRECISION {
                 return insert(key);
             }else {
                 v = cm->insert(key,1);
+                min_stage = -1
                 v.push_back(-1);
             }
         }else {

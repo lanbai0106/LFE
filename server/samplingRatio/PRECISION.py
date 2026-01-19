@@ -200,6 +200,7 @@ class PRECISION:
                     return self.update(key)
                 else:
                     self.cm.update(key, 1)
+                    self.min_stage = -1
             else:
                 self.min_stage = -1
 
@@ -216,7 +217,17 @@ class PRECISION:
             ans = self.cm.estimate(key)
 
         return ans
+    def ifHeavy(self, key):
+        pos = self.hashx.run(key) % self.l
+        flag = False
+        for i in range(self.k):
+            if self.H[pos][i].f == key:
+                flag = True
 
+        if not flag:
+            return 0
+        else:
+            return 1
     def estimate_ml(self, key,a,b,c):
         ans = None
         pos = self.hashx.run(key) % self.l
@@ -239,8 +250,8 @@ heavy_ratio = 0.3
 heavy_mem = int(total_memory * heavy_ratio)
 light_mem = total_memory - heavy_mem
 
-l = heavy_mem//(32+16)
-cm_cols = int(light_mem/rows)
+l = heavy_mem//(32+32)
+cm_cols = int(light_mem/rows/32)
 ratio_list = [0.2,0.1,0.02]
 cm_ml_cols_lsit = []
 for ratio in ratio_list:
@@ -270,6 +281,8 @@ y_10 = []
 X_50 = []
 y_50 = []
 for item in keys_5:
+    if cm_ml_5.ifHeavy(item):
+        continue
     X = cm_ml_5.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)
@@ -278,6 +291,8 @@ for item in keys_5:
         y_5.append(real_freq_5[item])
 
 for item in keys_10:
+    if cm_ml_10.ifHeavy(item):
+        continue
     X = cm_ml_10.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)
@@ -286,6 +301,8 @@ for item in keys_10:
         y_10.append(real_freq_10[item])
 
 for item in keys_50:
+    if cm_ml_50.ifHeavy(item):
+        continue
     X = cm_ml_50.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)

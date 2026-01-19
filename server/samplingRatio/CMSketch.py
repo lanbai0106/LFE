@@ -142,7 +142,7 @@ class CountMinSketch:
 
 total_memory = 300
 total_memory *= 1024 * 8
-cm_cols = int(total_memory / rows / 16)
+cm_cols = int(total_memory / rows / 32)
 ratio_list = [0.2, 0.1, 0.02]
 cm_ml_cols_lsit = []
 for ratio in ratio_list:

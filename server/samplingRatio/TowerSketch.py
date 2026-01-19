@@ -85,8 +85,8 @@ class TowerSketch:
     def __init__(self, num_rows, col_bits):
 
         self.num_rows = num_rows
-        self.bit_list = [4,8,16]
-        self.num_cols_list = [int(col_bits/4),int(col_bits/8),int(col_bits/16)]
+        self.bit_list = [8,16,32]
+        self.num_cols_list = [int(col_bits/8),int(col_bits/16),int(col_bits/32)]
 
         self.table = [[0] * self.num_cols_list[_] for _ in range(num_rows)]
 

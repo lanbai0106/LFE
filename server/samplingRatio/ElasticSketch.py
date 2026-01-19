@@ -100,6 +100,7 @@ class CountMinSketch:
 
         return hash_function
 
+
     def update(self, item, count=1):
 
         for i in range(self.num_rows):
@@ -113,6 +114,8 @@ class CountMinSketch:
             hash_value = int(self.hash_functions[i](item), 16) % self.num_cols
             min_estimate = min(min_estimate, self.table[i][hash_value])
         return min_estimate
+
+
 
     def estimate_ml(self, item,a,b,c):
         param_list = [a,b,c]
@@ -199,7 +202,12 @@ class ElasticSketch:
         else:
             return self.cm.estimate(self.H[pos].f)
 
-
+    def ifHeavy(self, key):
+        pos = self.hashx.run(key) % self.l
+        if self.H[pos].f == key:
+            return 1
+        else:
+            return 0
     def estimate_ml(self, key,a,b,c):
         pos = self.hashx.run(key) % self.l
         if self.H[pos].f == key:
@@ -219,8 +227,8 @@ heavy_ratio = 0.3
 heavy_mem = int(total_memory * heavy_ratio)
 light_mem = total_memory - heavy_mem
 
-l = heavy_mem // (32+1+16+16)
-cm_cols = int(light_mem/rows)
+l = heavy_mem // (32+1+32+32)
+cm_cols = int(light_mem/rows/32)
 ratio_list = [0.2,0.1,0.02]
 cm_ml_cols_lsit = []
 for ratio in ratio_list:
@@ -250,6 +258,8 @@ y_10 = []
 X_50 = []
 y_50 = []
 for item in keys_5:
+    if cm_ml_5.ifHeavy(item):
+        continue
     X = cm_ml_5.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)
@@ -258,6 +268,8 @@ for item in keys_5:
         y_5.append(real_freq_5[item])
 
 for item in keys_10:
+    if cm_ml_10.ifHeavy(item):
+        continue
     X = cm_ml_10.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)
@@ -266,6 +278,8 @@ for item in keys_10:
         y_10.append(real_freq_10[item])
 
 for item in keys_50:
+    if cm_ml_50.ifHeavy(item):
+        continue
     X = cm_ml_50.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)
@@ -301,24 +315,25 @@ cm_ml_50_frequency = []
 cnt5_1,cnt5_2,cnt10_1,cnt10_2,cnt50_1,cnt50_2 = 0,0,0,0,0,0
 for item in keys:
     true_frequency.append(real_freq[item])
-    cm_frequency.append(cm.estimate(item))
+    res_cm = cm.estimate(item)
+    cm_frequency.append(res_cm)
     res,flag = cm.estimate_ml(item,best_a_5,best_b_5,best_c_5)
     cm_ml_5_frequency.append(res)
-    if flag == 1:
+    if flag == 1 and res_cm >= real_freq[item]:
         if res >= real_freq[item]:
             cnt5_1 += 1
         else:
             cnt5_2 += 1
     res,flag = cm.estimate_ml(item,best_a_10,best_b_10,best_c_10)
     cm_ml_10_frequency.append(res)
-    if flag == 1:
+    if flag == 1 and res_cm >= real_freq[item]:
         if res >= real_freq[item]:
             cnt10_1 += 1
         else:
             cnt10_2 += 1
     res,flag = cm.estimate_ml(item,best_a_50,best_b_50,best_c_50)
     cm_ml_50_frequency.append(res)
-    if flag == 1:
+    if flag == 1 and res_cm >= real_freq[item]:
         if res >= real_freq[item]:
             cnt50_1 += 1
         else:
