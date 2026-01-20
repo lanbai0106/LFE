@@ -338,25 +338,26 @@ cm_ml_50_frequency = []
 cnt5_1,cnt5_2,cnt10_1,cnt10_2,cnt50_1,cnt50_2 = 0,0,0,0,0,0
 for item in keys:
     true_frequency.append(real_freq[item])
-    cm_frequency.append(cm.estimate(item))
+    res_cm = cm.estimate(item)
+    cm_frequency.append(res_cm)
     res,flag = cm.estimate_ml(item,best_a_5,best_b_5,best_c_5)
     cm_ml_5_frequency.append(res)
     if flag == 1:
-        if res >= real_freq[item]:
+        if res >= real_freq[item] and res != res_cm:
             cnt5_1 += 1
         else:
             cnt5_2 += 1
     res,flag = cm.estimate_ml(item,best_a_10,best_b_10,best_c_10)
     cm_ml_10_frequency.append(res)
     if flag == 1:
-        if res >= real_freq[item]:
+        if res >= real_freq[item] and res != res_cm:
             cnt10_1 += 1
         else:
             cnt10_2 += 1
     res,flag = cm.estimate_ml(item,best_a_50,best_b_50,best_c_50)
     cm_ml_50_frequency.append(res)
     if flag == 1:
-        if res >= real_freq[item]:
+        if res >= real_freq[item] and res != res_cm:
             cnt50_1 += 1
         else:
             cnt50_2 += 1

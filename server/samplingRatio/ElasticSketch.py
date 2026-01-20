@@ -319,21 +319,21 @@ for item in keys:
     cm_frequency.append(res_cm)
     res,flag = cm.estimate_ml(item,best_a_5,best_b_5,best_c_5)
     cm_ml_5_frequency.append(res)
-    if flag == 1 and res_cm >= real_freq[item]:
+    if flag == 1 and res_cm >= real_freq[item] and res != cm_frequency[-1]:
         if res >= real_freq[item]:
             cnt5_1 += 1
         else:
             cnt5_2 += 1
     res,flag = cm.estimate_ml(item,best_a_10,best_b_10,best_c_10)
     cm_ml_10_frequency.append(res)
-    if flag == 1 and res_cm >= real_freq[item]:
+    if flag == 1 and res_cm >= real_freq[item] and res != cm_frequency[-1]:
         if res >= real_freq[item]:
             cnt10_1 += 1
         else:
             cnt10_2 += 1
     res,flag = cm.estimate_ml(item,best_a_50,best_b_50,best_c_50)
     cm_ml_50_frequency.append(res)
-    if flag == 1 and res_cm >= real_freq[item]:
+    if flag == 1 and res_cm >= real_freq[item] and res != cm_frequency[-1]:
         if res >= real_freq[item]:
             cnt50_1 += 1
         else:

@@ -51,11 +51,11 @@ real_freq_50 = Counter(sample_pac_50)
 rows = 3
 
 
-powers = [2**k for k in range(0, 6)]
+powers = [2**k for k in range(0, 5)]
 
 
 def get_best_params(X, y):
-    best_a, best_b, best_c = None, None, None
+    best_a, best_b, best_c = 1, 1, 1
     best_error = float('inf')
     for a in powers:
         for b in powers:
@@ -78,7 +78,7 @@ def get_best_params(X, y):
 
 def calculate_aae(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)))
-
+threshold = 500
 def calculate_are(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)) / np.array(true))
 class TowerSketch:
@@ -128,7 +128,7 @@ class TowerSketch:
                 min_estimate = min(min_estimate, int(self.table[i][hash_value]))
                 max_estimate = max(max_estimate, int(self.table[i][hash_value]))
                 min_ml_est = min(min_ml_est,int(self.table[i][hash_value])/param_list[i])
-        if max_estimate - min_estimate > 500 and min_estimate < 2000:
+        if max_estimate - min_estimate > threshold and min_estimate < 2000:
             return min_ml_est,1
         return min_estimate,0
 
@@ -165,7 +165,7 @@ for i, p in enumerate(pac):
         cm_ml_50.update(p)
     cm.update(p)
 
-threshold = 100
+
 
 X_5 = []
 y_5 = []
@@ -179,7 +179,7 @@ for item in keys_5:
     X = cm_ml_5.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold:
+    if maxx - minn > threshold and minn < 400:
         X_5.append(X)
         y_5.append(real_freq_5[item])
 
@@ -187,7 +187,7 @@ for item in keys_10:
     X = cm_ml_10.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold:
+    if maxx - minn > threshold and minn < 200:
         X_10.append(X)
         y_10.append(real_freq_10[item])
 
@@ -195,7 +195,7 @@ for item in keys_50:
     X = cm_ml_50.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold:
+    if maxx - minn > threshold and minn < 100:
         X_50.append(X)
         y_50.append(real_freq_50[item])
 
@@ -227,25 +227,26 @@ cm_ml_50_frequency = []
 cnt5_1,cnt5_2,cnt10_1,cnt10_2,cnt50_1,cnt50_2 = 0,0,0,0,0,0
 for item in keys:
     true_frequency.append(real_freq[item])
-    cm_frequency.append(cm.estimate(item))
+    res_cm = cm.estimate(item)
+    cm_frequency.append(res_cm)
     res,flag = cm.estimate_ml(item,best_a_5,best_b_5,best_c_5)
     cm_ml_5_frequency.append(res)
-    if flag == 1:
-        if res >= real_freq[item] and minn < 2000:
+    if flag == 1 and res != res_cm:
+        if res >= real_freq[item] :
             cnt5_1 += 1
         else:
             cnt5_2 += 1
     res,flag = cm.estimate_ml(item,best_a_10,best_b_10,best_c_10)
     cm_ml_10_frequency.append(res)
-    if flag == 1:
-        if res >= real_freq[item]and minn < 2000:
+    if flag == 1 and res != res_cm:
+        if res >= real_freq[item]:
             cnt10_1 += 1
         else:
             cnt10_2 += 1
     res,flag = cm.estimate_ml(item,best_a_50,best_b_50,best_c_50)
     cm_ml_50_frequency.append(res)
-    if flag == 1:
-        if res >= real_freq[item] and minn < 2000:
+    if flag == 1 and res != res_cm:
+        if res >= real_freq[item] :
             cnt50_1 += 1
         else:
             cnt50_2 += 1
