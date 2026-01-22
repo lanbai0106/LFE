@@ -70,7 +70,7 @@ def get_best_params(X, y):
                     else:
                         total_error += (y_hat - yi) / yi
                     # total_error += abs(yi - y_hat)/yi
-                if sum1 > 100:
+                if sum1 > 500:
                     total_error = float('inf')
 
                 if total_error < best_error:
@@ -80,7 +80,7 @@ def get_best_params(X, y):
 
 def calculate_aae(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)))
-threshold = 500
+threshold = 3000
 threshold1 = 2000
 total_memory = 200
 def calculate_are(true, estimate):
@@ -89,8 +89,8 @@ class TowerSketch:
     def __init__(self, num_rows, col_bits):
 
         self.num_rows = num_rows
-        self.bit_list = [8,16,64]
-        self.num_cols_list = [int(col_bits/8),int(col_bits/16),int(col_bits/64)]
+        self.bit_list = [8,16,32]
+        self.num_cols_list = [int(col_bits/8),int(col_bits/16),int(col_bits/32)]
 
         self.table = [[0] * self.num_cols_list[_] for _ in range(num_rows)]
 
@@ -182,7 +182,7 @@ for item in keys_5:
     X = cm_ml_5.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and threshold1//5:
+    if maxx - minn > threshold and threshold1:
         X_5.append(X)
         y_5.append(real_freq_5[item])
 
@@ -190,7 +190,7 @@ for item in keys_10:
     X = cm_ml_10.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and threshold1//10:
+    if maxx - minn > threshold and threshold1:
         X_10.append(X)
         y_10.append(real_freq_10[item])
 
@@ -198,7 +198,7 @@ for item in keys_50:
     X = cm_ml_50.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and threshold1//50:
+    if maxx - minn > threshold and threshold1:
         X_50.append(X)
         y_50.append(real_freq_50[item])
 

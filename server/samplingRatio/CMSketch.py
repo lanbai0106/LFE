@@ -179,7 +179,7 @@ for item in keys_5:
     X = cm_ml_5.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < threshold1//5:
+    if maxx - minn > threshold and minn < threshold1:
         X_5.append(X)
         y_5.append(real_freq_5[item])
 
@@ -187,7 +187,7 @@ for item in keys_10:
     X = cm_ml_10.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < threshold1//10:
+    if maxx - minn > threshold and minn < threshold1:
         X_10.append(X)
         y_10.append(real_freq_10[item])
 
@@ -195,7 +195,7 @@ for item in keys_50:
     X = cm_ml_50.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < threshold1//50:
+    if maxx - minn > threshold and minn < threshold1:
         X_50.append(X)
         y_50.append(real_freq_50[item])
 
