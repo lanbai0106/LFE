@@ -51,7 +51,7 @@ real_freq_50 = Counter(sample_pac_50)
 rows = 3
 
 
-powers = [2**k for k in range(0, 6)]  # 2^0 到 2^15
+powers = [2**k for k in range(0, 5)]
 
 
 def get_best_params(X, y):
@@ -81,6 +81,9 @@ def calculate_aae(true, estimate):
 def calculate_are(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)) / np.array(true))
 
+
+threshold = 1000
+threshold1 = 1000
 class CountMinSketch:
     def __init__(self, num_rows, num_cols):
 
@@ -127,7 +130,7 @@ class CountMinSketch:
             min_estimate = min(min_estimate, int(self.table[i][hash_value]))
             max_estimate = max(max_estimate, int(self.table[i][hash_value]))
             min_ml_est = min(min_ml_est,int(self.table[i][hash_value])/param_list[i])
-        if max_estimate - min_estimate > 1000 and min_estimate < 1000:
+        if max_estimate - min_estimate > threshold and min_estimate < threshold1:
             return min_ml_est,1
         return min_estimate,0
 
@@ -247,7 +250,7 @@ for i, p in enumerate(pac):
         cm_ml_50.update(p)
     cm.update(p)
 
-threshold = 1000
+
 
 X_5 = []
 y_5 = []
@@ -263,7 +266,7 @@ for item in keys_5:
     X = cm_ml_5.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 200:
+    if maxx - minn > threshold and minn < 400:
         X_5.append(X)
         y_5.append(real_freq_5[item])
 
@@ -283,7 +286,7 @@ for item in keys_50:
     X = cm_ml_50.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 200:
+    if maxx - minn > threshold and minn < 100:
         X_50.append(X)
         y_50.append(real_freq_50[item])
 

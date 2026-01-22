@@ -79,6 +79,7 @@ def get_best_params(X, y):
 def calculate_aae(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)))
 threshold = 500
+threshold = 2000
 def calculate_are(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)) / np.array(true))
 class TowerSketch:
@@ -128,7 +129,7 @@ class TowerSketch:
                 min_estimate = min(min_estimate, int(self.table[i][hash_value]))
                 max_estimate = max(max_estimate, int(self.table[i][hash_value]))
                 min_ml_est = min(min_ml_est,int(self.table[i][hash_value])/param_list[i])
-        if max_estimate - min_estimate > threshold and min_estimate < 2000:
+        if max_estimate - min_estimate > threshold and min_estimate < threshold:
             return min_ml_est,1
         return min_estimate,0
 
@@ -144,7 +145,7 @@ class TowerSketch:
 
 
 
-total_memory = 100
+total_memory = 200
 total_memory *= 1024*8
 cm_cols = int(total_memory/rows)
 ratio_list = [0.2,0.1,0.02]
