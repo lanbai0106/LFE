@@ -60,13 +60,16 @@ def get_best_params(X, y):
             for c in powers:
                 total_error = 0.0
 
+                sum1 = 0
                 for (x1, x2, x3), yi in zip(X, y):
                     y_hat = min(x1 / a, x2 / b, x3 / c)
                     if yi > y_hat:
-                        total_error = float('inf')
+                        sum1 += 1
                     else:
                         total_error += (y_hat - yi) / yi
-                    # total_error += abs(yi - y_hat)
+                    # total_error += abs(yi - y_hat)/yi
+                if sum1 > 500:
+                    total_error = float('inf')
 
                 if total_error < best_error:
                     best_error = total_error
@@ -79,8 +82,9 @@ def calculate_aae(true, estimate):
 def calculate_are(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)) / np.array(true))
 
-threshold = 500
+threshold = 3000
 threshol1 = 3000
+total_memory = 200
 
 class CUSketch:
     def __init__(self, num_rows, num_cols):
@@ -143,8 +147,6 @@ class CUSketch:
         return v_list
 
 
-
-total_memory = 200
 total_memory *= 1024*8
 cm_cols = int(total_memory/rows/32)
 ratio_list = [0.2,0.1,0.02]
@@ -179,7 +181,7 @@ for item in keys_5:
     X = cm_ml_5.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 400:
+    if maxx - minn > threshold and minn < threshol1//5:
         X_5.append(X)
         y_5.append(real_freq_5[item])
 
@@ -187,7 +189,7 @@ for item in keys_10:
     X = cm_ml_10.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 200:
+    if maxx - minn > threshold and minn < threshol1//10:
         X_10.append(X)
         y_10.append(real_freq_10[item])
 
@@ -195,7 +197,7 @@ for item in keys_50:
     X = cm_ml_50.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 100:
+    if maxx - minn > threshold and minn < threshol1//50:
         X_50.append(X)
         y_50.append(real_freq_50[item])
 

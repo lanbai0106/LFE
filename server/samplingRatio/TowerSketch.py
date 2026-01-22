@@ -62,14 +62,16 @@ def get_best_params(X, y):
             for c in powers:
                 total_error = 0.0
 
+                sum1 = 0
                 for (x1, x2, x3), yi in zip(X, y):
                     y_hat = min(x1 / a, x2 / b, x3 / c)
                     if yi > y_hat:
-                        # print(yi, y_hat)
-                        total_error = float('inf')
+                        sum1 += 1
                     else:
                         total_error += (y_hat - yi) / yi
-                    # total_error += abs(yi - y_hat)
+                    # total_error += abs(yi - y_hat)/yi
+                if sum1 > 100:
+                    total_error = float('inf')
 
                 if total_error < best_error:
                     best_error = total_error
@@ -79,7 +81,8 @@ def get_best_params(X, y):
 def calculate_aae(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)))
 threshold = 500
-threshold = 2000
+threshold1 = 2000
+total_memory = 200
 def calculate_are(true, estimate):
     return np.mean(np.abs(np.array(true) - np.array(estimate)) / np.array(true))
 class TowerSketch:
@@ -129,7 +132,7 @@ class TowerSketch:
                 min_estimate = min(min_estimate, int(self.table[i][hash_value]))
                 max_estimate = max(max_estimate, int(self.table[i][hash_value]))
                 min_ml_est = min(min_ml_est,int(self.table[i][hash_value])/param_list[i])
-        if max_estimate - min_estimate > threshold and min_estimate < threshold:
+        if max_estimate - min_estimate > threshold and min_estimate < threshold1:
             return min_ml_est,1
         return min_estimate,0
 
@@ -145,7 +148,6 @@ class TowerSketch:
 
 
 
-total_memory = 200
 total_memory *= 1024*8
 cm_cols = int(total_memory/rows)
 ratio_list = [0.2,0.1,0.02]
@@ -180,7 +182,7 @@ for item in keys_5:
     X = cm_ml_5.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 400:
+    if maxx - minn > threshold and threshold1//5:
         X_5.append(X)
         y_5.append(real_freq_5[item])
 
@@ -188,7 +190,7 @@ for item in keys_10:
     X = cm_ml_10.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 200:
+    if maxx - minn > threshold and threshold1//10:
         X_10.append(X)
         y_10.append(real_freq_10[item])
 
@@ -196,7 +198,7 @@ for item in keys_50:
     X = cm_ml_50.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 100:
+    if maxx - minn > threshold and threshold1//50:
         X_50.append(X)
         y_50.append(real_freq_50[item])
 

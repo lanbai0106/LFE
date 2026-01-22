@@ -62,13 +62,16 @@ def get_best_params(X, y):
             for c in powers:
                 total_error = 0.0
 
+                sum1 = 0
                 for (x1, x2, x3), yi in zip(X, y):
                     y_hat = min(x1 / a, x2 / b, x3 / c)
                     if yi > y_hat:
-                        total_error = float('inf')
+                        sum1 += 1
                     else:
                         total_error += (y_hat - yi) / yi
-                    # total_error += abs(yi - y_hat)
+                    # total_error += abs(yi - y_hat)/yi
+                if sum1 > 100:
+                    total_error = float('inf')
 
                 if total_error < best_error:
                     best_error = total_error
@@ -84,6 +87,8 @@ def calculate_are(true, estimate):
 
 threshold = 1000
 threshold1 = 1000
+total_memory = 200
+
 class CountMinSketch:
     def __init__(self, num_rows, num_cols):
 
@@ -223,8 +228,6 @@ class ElasticSketch:
             return self.cm.estimate_ml(self.H[pos].f,a,b,c)
 
 
-
-total_memory = 200
 total_memory *= 1024*8
 heavy_ratio = 0.3
 heavy_mem = int(total_memory * heavy_ratio)
@@ -266,7 +269,7 @@ for item in keys_5:
     X = cm_ml_5.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 400:
+    if maxx - minn > threshold and minn < threshold1//5:
         X_5.append(X)
         y_5.append(real_freq_5[item])
 
@@ -276,7 +279,7 @@ for item in keys_10:
     X = cm_ml_10.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 200:
+    if maxx - minn > threshold and minn < threshold1//10:
         X_10.append(X)
         y_10.append(real_freq_10[item])
 
@@ -286,7 +289,7 @@ for item in keys_50:
     X = cm_ml_50.cm.get_counters(item)
     minn = min(X)
     maxx = max(X)
-    if maxx - minn > threshold and minn < 100:
+    if maxx - minn > threshold and minn < threshold1//50:
         X_50.append(X)
         y_50.append(real_freq_50[item])
 
