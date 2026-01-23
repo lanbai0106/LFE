@@ -36,7 +36,7 @@ void report_M(vector<uint32_t> pac_list,std::map<std::string,std::map<std::strin
 
         // CM
         m = memory/k/16;
-        auto cm = new CMSketch(m,k);
+        auto cm = new CMSketch(m,k,3000,3000);
 
         // CU
         m = memory/k/16;
