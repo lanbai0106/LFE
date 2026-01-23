@@ -67,7 +67,7 @@ struct TowerSketch {
 
         sort(results.begin(), results.end());
         int ans = 1e9;
-        if(results[1] - results[0] > 100 && results[0] < 2000) {
+        if(results[1] - results[0] > 3000 && results[0] < 2000) {
             ans = min(results[0]/32,results[1]/32);
             ans = min(ans,results[2]/32);
         }else {

@@ -31,7 +31,7 @@ struct PRECISION {
                 H[i][j].cnt = 0;
             }
         }
-        cm = new CMSketch(m,d);
+        cm = new CMSketch(m,d,1000,2000);
 
         hashx = new BOBHash32(uint8_t(rd() % MAX_PRIME32));
         hash = new BOBHash32*[d];

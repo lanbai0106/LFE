@@ -2,8 +2,8 @@ struct CMSketch {
     int m, hnum;
     uint32_t **a;
     BOBHash32 **hash;
-
-    CMSketch(int _m, int _hnum) : m(_m), hnum(_hnum) {
+    double thre_1,thre_2;
+    CMSketch(int _m, int _hnum, int _thre_1, int _thre_2) : m(_m), hnum(_hnum), thre_1(_thre_1), thre_2(_thre_2) {
 
         a = new uint32_t*[hnum];
         for (int i = 0; i < _hnum; i++) {
@@ -56,7 +56,7 @@ struct CMSketch {
 
         sort(results.begin(), results.end());
         int ans = 1e9;
-        if(results[1] - results[0] > 100 && results[0] < 2000) {
+        if(results[1] - results[0] > thre_1 && results[0] < thre_2) {
             ans = min(results[0]/32,results[1]/32);
             ans = min(ans,results[2]/32);
         }else {

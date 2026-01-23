@@ -1,25 +1,25 @@
 std::vector<int> CM_CA16 = {32,32,32};
-std::vector<int> CM_CA19 = {32,32,32};
+std::vector<int> CM_CA19 = {4,4,4};
 std::vector<int> CM_DC = {32,32,32};
 std::vector<int> CM_SO = {32,32,32};
 
 std::vector<int> CU_CA16 = {32,32,32};
-std::vector<int> CU_CA19 = {32,32,32};
+std::vector<int> CU_CA19 = {4,4,4};
 std::vector<int> CU_DC = {32,32,32};
 std::vector<int> CU_SO = {32,32,32};
 
 std::vector<int> ES_CA16 = {32,32,32};
-std::vector<int> ES_CA19 = {32,32,32};
+std::vector<int> ES_CA19 = {4,2,4};
 std::vector<int> ES_DC = {32,32,32};
 std::vector<int> ES_SO = {32,32,32};
 
 std::vector<int> TS_CA16 = {32,32,32};
-std::vector<int> TS_CA19 = {32,32,32};
+std::vector<int> TS_CA19 = {2,1,1};
 std::vector<int> TS_DC = {32,32,32};
 std::vector<int> TS_SO = {32,32,32};
 
 std::vector<int> PRE_CA16 = {32,32,32};
-std::vector<int> PRE_CA19 = {32,32,32};
+std::vector<int> PRE_CA19 = {16,16,16};
 std::vector<int> PRE_DC = {32,32,32};
 std::vector<int> PRE_SO = {32,32,32};
 

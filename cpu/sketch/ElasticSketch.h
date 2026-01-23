@@ -31,7 +31,7 @@ struct ElasticSketch {
             H[i].nvote = 0;
             H[i].f = 0;
         }
-        cm = new CMSketch(m,d);
+        cm = new CMSketch(m,d,1000,1000);
 
         hashx = new BOBHash32(uint8_t(rd() % MAX_PRIME32));
         hash = new BOBHash32*[d];

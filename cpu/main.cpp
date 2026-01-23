@@ -32,7 +32,7 @@ using namespace std;
 
 int main()
 {
-    DataLoader data_loader = DataLoader("so"); Object obj = data_loader.get_object();
+    DataLoader data_loader = DataLoader("C19"); Object obj = data_loader.get_object();
     vector<uint32_t> pac_list  = obj.pac_list;
     bool ifM = 1;
     if(ifM) {

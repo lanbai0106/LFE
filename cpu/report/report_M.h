@@ -1,5 +1,5 @@
 void report_M(vector<uint32_t> pac_list,std::map<std::string,std::map<std::string,std::vector<int>>> parameters_main) {
-    int left = 0, right = 5;
+    int left = 1, right = 2;
     int M_lsit[6] = {100,200,300,400,500};
     double heavy_ratio = 0.3;
 
