@@ -74,7 +74,7 @@ keys_10_total  = []
 keys_50_total  = []
 keys_total  = []
 cnt = 0
-with open("../data/CAIDA19.txt", "r", encoding="utf-8") as f:
+with open("../../cpu/data/CAIDA19.txt", "r", encoding="utf-8") as f:
     for line in f:
         parts = line.strip().split()
         if len(parts) >= 2:
@@ -161,7 +161,7 @@ aae_list_ml_10 = []
 are_list_ml_10 = []
 ncc_list_ml_10 = []
 nic_list_ml_10 = []
-total_memory = 100
+total_memory = 20
 total_memory *= 1024*8
 cm_cols = int(total_memory/rows/32)
 ratio_list = [0.1,0.1,0.02]
@@ -206,6 +206,7 @@ for secon in range(60):
     best_c_5 = None
 
     best_a_5,best_b_5,best_c_5 = get_best_params(X_5,y_5)
+    print(best_a_5,best_b_5,best_c_5)
     if (secon % 2) == 0:
         last_2_a_5,last_2_b_5,last_2_c_5 = best_a_5,best_b_5,best_c_5
     if (secon % 5) == 0:
@@ -291,3 +292,50 @@ for secon in range(60):
     are_list_ml_10.append(are_cm_ml_10second)
     ncc_list_ml_10.append(cnt10_1)
     nic_list_ml_10.append(cnt10_2)
+print("AAE")
+print("Non: ",end='')
+print(*aae_list)
+print("every second: ",end='')
+print(*aae_list_ml)
+print("every 2 second: ",end='')
+print(*aae_list_ml_2)
+print("every 5 second: ",end='')
+print(*aae_list_ml_5)
+print("every 10 second: ",end='')
+print(*aae_list_ml_10)
+
+print("ARE")
+print("Non: ",end='')
+print(*are_list)
+print("every second: ",end='')
+print(*are_list_ml)
+print("every 2 second: ",end='')
+print(*are_list_ml_2)
+print("every 5 second: ",end='')
+print(*are_list_ml_5)
+print("every 10 second: ",end='')
+print(*are_list_ml_10)
+
+print("NCC")
+print("Non: ",end='')
+print(*ncc_list)
+print("every second: ",end='')
+print(*ncc_list_ml)
+print("every 2 second: ",end='')
+print(*ncc_list_ml_2)
+print("every 5 second: ",end='')
+print(*ncc_list_ml_5)
+print("every 10 second: ",end='')
+print(*ncc_list_ml_10)
+
+print("NIC")
+print("Non: ",end='')
+print(*nic_list)
+print("every second: ",end='')
+print(*nic_list_ml)
+print("every 2 second: ",end='')
+print(*nic_list_ml_2)
+print("every 5 second: ",end='')
+print(*nic_list_ml_5)
+print("every 10 second: ",end='')
+print(*nic_list_ml_10)
