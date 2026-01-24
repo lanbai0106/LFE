@@ -3,7 +3,8 @@ struct CMSketch {
     uint32_t **a;
     BOBHash32 **hash;
     double thre_1,thre_2;
-    CMSketch(int _m, int _hnum, int _thre_1, int _thre_2) : m(_m), hnum(_hnum), thre_1(_thre_1), thre_2(_thre_2) {
+    double p_a,p_b,p_c;
+    CMSketch(int _m, int _hnum, int _thre_1, int _thre_2,double p_a,double p_b,double p_c) : m(_m), hnum(_hnum), thre_1(_thre_1), thre_2(_thre_2),p_a(p_a), p_b(p_b), p_c(p_c) {
 
         a = new uint32_t*[hnum];
         for (int i = 0; i < _hnum; i++) {
@@ -56,9 +57,9 @@ struct CMSketch {
 
         sort(results.begin(), results.end());
         int ans = 1e9;
-        if(results[1] - results[0] > thre_1 && results[0] < thre_2) {
-            ans = min(results[0]/32,results[1]/32);
-            ans = min(ans,results[2]/32);
+        if(results[2] - results[0] > thre_1 && results[0] < thre_2) {
+            ans = min(results[0]/p_a,results[1]/p_b);
+            ans = min(ans,int(results[2]/p_c));
         }else {
             ans = results[0];
         }

@@ -20,8 +20,8 @@ struct PRECISION {
      */
     int d,m;
     CMSketch *cm;
-
-    PRECISION(int _l, int _k, int _d, int _m) : l(_l), k(_k), d(_d), m(_m) {
+    double p_a,p_b,p_c;
+    PRECISION(int _l, int _k, int _d, int _m,double p_a,double p_b,double p_c) : l(_l), k(_k), d(_d) ,m(_m),p_a(p_a), p_b(p_b), p_c(p_c)  {
         min_stage = -1;
         H = new PBucket*[l];
         for (int i = 0; i < l; i++) {
@@ -31,7 +31,7 @@ struct PRECISION {
                 H[i][j].cnt = 0;
             }
         }
-        cm = new CMSketch(m,d,1000,2000);
+        cm = new CMSketch(m,d,1000,2000,p_a,p_b,p_c);
 
         hashx = new BOBHash32(uint8_t(rd() % MAX_PRIME32));
         hash = new BOBHash32*[d];

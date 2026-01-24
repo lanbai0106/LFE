@@ -21,9 +21,11 @@ struct ElasticSketch {
      */
     int d,m;
     CMSketch *cm;
+    double p_a,p_b,p_c;
 
-    ElasticSketch(int _l, int _d, int _m) : l(_l), d(_d), m(_m) {
+    ElasticSketch(int _l, int _d, int _m,double p_a,double p_b,double p_c) : l(_l), d(_d), m(_m),p_a(p_a), p_b(p_b), p_c(p_c)  {
         lamada = 8;
+        // cout << l << " " << d << " " << m << " " << p_a << " " << p_b << " " << p_c << endl;
         H = new EBucket[l];
         for (int i = 0; i < l; i++) {
             H[i].flag = false;
@@ -31,7 +33,7 @@ struct ElasticSketch {
             H[i].nvote = 0;
             H[i].f = 0;
         }
-        cm = new CMSketch(m,d,1000,1000);
+        cm = new CMSketch(m,d,1000,1000,p_a,p_b,p_c);
 
         hashx = new BOBHash32(uint8_t(rd() % MAX_PRIME32));
         hash = new BOBHash32*[d];

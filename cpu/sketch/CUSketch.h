@@ -2,8 +2,8 @@ struct CUSketch {
     int m, hnum;
     uint32_t **a;
     BOBHash32 **hash;
-
-    CUSketch(int _m, int _hnum) : m(_m), hnum(_hnum) {
+    double p_a,p_b,p_c;
+    CUSketch(int _m, int _hnum,double p_a,double p_b,double p_c) : m(_m), hnum(_hnum),p_a(p_a), p_b(p_b), p_c(p_c) {
 
         a = new uint32_t*[hnum];
         for (int i = 0; i < _hnum; i++) {
@@ -62,9 +62,9 @@ struct CUSketch {
 
         sort(results.begin(), results.end());
         int ans = 1e9;
-        if(results[1] - results[0] > 3000 && results[0] < 3000) {
-            ans = min(results[0]/32,results[1]/32);
-            ans = min(ans,results[2]/32);
+        if(results[2] - results[0] > 3000 && results[0] < 3000) {
+            ans = min(results[0]/p_a,results[1]/p_b);
+            ans = min(ans,int(results[2]/p_c));
         }else {
             ans = results[0];
         }

@@ -19,7 +19,7 @@ keys_10 = set()
 keys_50 = set()
 keys = set()
 cnt = 0
-with open("../../cpu/data/CAIDA19.txt", "r", encoding="utf-8") as f:
+with open("../../cpu/data/CAIDA16.txt", "r", encoding="utf-8") as f:
     for line in f:
         parts = line.strip().split()
         if len(parts) >= 2:
@@ -70,7 +70,7 @@ def get_best_params(X, y):
                     else:
                         total_error += (y_hat - yi) / yi
                     # total_error += abs(yi - y_hat)/yi
-                if sum1 > 100:
+                if sum1 > 1000:
                     total_error = float('inf')
 
                 if total_error < best_error:
@@ -88,7 +88,6 @@ def calculate_are(true, estimate):
 threshold = 1000
 threshold1 = 1000
 total_memory = 200
-
 class CountMinSketch:
     def __init__(self, num_rows, num_cols):
 

@@ -26,18 +26,17 @@
 
 
 #include "report/report_M.h"
-
+#include <filesystem>
 using namespace std;
-
 
 int main()
 {
-    DataLoader data_loader = DataLoader("C19"); Object obj = data_loader.get_object();
+    std::map<std::string,std::map<std::string,std::vector<int>>> parameters_main = read_parameters_main();
+    DataLoader data_loader = DataLoader("so",parameters_main); Object obj = data_loader.get_object();
     vector<uint32_t> pac_list  = obj.pac_list;
     bool ifM = 1;
     if(ifM) {
-        std::map<std::string,std::map<std::string,std::vector<int>>> parameters_main = read_parameters_main();
-        report_M(obj.pac_list,parameters_main);
+        report_M(obj.pac_list,obj);
     }
     return 0;
 }
