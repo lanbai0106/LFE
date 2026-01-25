@@ -198,90 +198,90 @@ void report_M(vector<uint32_t> pac_list,Object obj) {
         //     preare_ml += abs(value-premlv)/value;
         // }
         //
-        // for (int i = 0; i < interval_num; i++) {
-        //     cmaaeH += abs(Hist_cm[i]-Hist[i]);
-        //     cmareH += abs(Hist_cm[i]-Hist[i])/Hist[i];
-        //     cmaaeH_ml += abs(Hist_cm_ml[i]-Hist[i]);
-        //     cmareH_ml += abs(Hist_cm_ml[i]-Hist[i])/Hist[i];
-        //
-        //
-        //     cuaaeH += abs(Hist_cu[i]-Hist[i]);
-        //     cuareH += abs(Hist_cu[i]-Hist[i])/Hist[i];
-        //     cuaaeH_ml += abs(Hist_cu_ml[i]-Hist[i]);
-        //     cuareH_ml += abs(Hist_cu_ml[i]-Hist[i])/Hist[i];
-        //
-        //     tsaaeH += abs(Hist_ts[i]-Hist[i]);
-        //     tsareH += abs(Hist_ts[i]-Hist[i])/Hist[i];
-        //     tsaaeH_ml += abs(Hist_ts_ml[i]-Hist[i]);
-        //     tsareH_ml += abs(Hist_ts_ml[i]-Hist[i])/Hist[i];
-        //
-        //     esaaeH += abs(Hist_es[i]-Hist[i]);
-        //     esareH += abs(Hist_es[i]-Hist[i])/Hist[i];
-        //     esaaeH_ml += abs(Hist_es_ml[i]-Hist[i]);
-        //     esareH_ml += abs(Hist_es_ml[i]-Hist[i])/Hist[i];
-        //
-        //     preaaeH += abs(Hist_pre[i]-Hist[i]);
-        //     preareH += abs(Hist_pre[i]-Hist[i])/Hist[i];
-        //     preaaeH_ml += abs(Hist_pre_ml[i]-Hist[i]);
-        //     preareH_ml += abs(Hist_pre_ml[i]-Hist[i])/Hist[i];
-        // }
-        // cmaae_list[i] = cmaae/truth_frequency.size();
-        // cmare_list[i] = cmare/truth_frequency.size();
-        // cmaae_list_ml[i] = cmaae_ml/truth_frequency.size();
-        // cmare_list_ml[i] = cmare_ml/truth_frequency.size();
-        //
-        // cuaae_list[i] = cuaae/truth_frequency.size();
-        // cuare_list[i] = cuare/truth_frequency.size();
-        // cuaae_list_ml[i] = cuaae_ml/truth_frequency.size();
-        // cuare_list_ml[i] = cuare_ml/truth_frequency.size();
-        //
-        // Tsaae_list[i] = tsaae/truth_frequency.size();
-        // Tsare_list[i] = tsare/truth_frequency.size();
-        // Tsaae_list_ml[i] = tsaae_ml/truth_frequency.size();
-        // Tsare_list_ml[i] = tsare_ml/truth_frequency.size();
-        //
-        // esaae_list[i] = esaae/truth_frequency.size();
-        // esare_list[i] = esare/truth_frequency.size();
-        // esaae_list_ml[i] = esaae_ml/truth_frequency.size();
-        // esare_list_ml[i] = esare_ml/truth_frequency.size();
-        //
-        // preaae_list[i] = preaae/truth_frequency.size();
-        // preare_list[i] = preare/truth_frequency.size();
-        // preaae_list_ml[i] = preaae_ml/truth_frequency.size();
-        // preare_list_ml[i] = preare_ml/truth_frequency.size();
-        //
-        // /*
-        //  * Dist
-        //  */
-        // cmaaeH_list[i] = cmaaeH/interval_num;
-        // cmareH_list[i] = cmareH/interval_num;
-        // cmaaeH_list_ml[i] = cmaaeH_ml/interval_num;
-        // cmareH_list_ml[i] = cmareH_ml/interval_num;
-        //
-        // cuaaeH_list[i] = cuaaeH/interval_num;
-        // cuareH_list[i] = cuareH/interval_num;
-        // cuaaeH_list_ml[i] = cuaaeH_ml/interval_num;
-        // cuareH_list_ml[i] = cuareH_ml/interval_num;
-        //
-        // tsaaeH_list[i] = tsaaeH/interval_num;
-        // tsareH_list[i] = tsareH/interval_num;
-        // tsaaeH_list_ml[i] = tsaaeH_ml/interval_num;
-        // tsareH_list_ml[i] = tsareH_ml/interval_num;
-        //
-        //
-        // esaaeH_list[i] = esaaeH/interval_num;
-        // esareH_list[i] = esareH/interval_num;
-        // esaaeH_list_ml[i] = esaaeH_ml/interval_num;
-        // esareH_list_ml[i] = esareH_ml/interval_num;
-        //
-        // preaaeH_list[i] = preaaeH/interval_num;
-        // preareH_list[i] = preareH/interval_num;
-        // preaaeH_list_ml[i] = preaaeH_ml/interval_num;
-        // preareH_list_ml[i] = preareH_ml/interval_num;
+        for (int i = 0; i < interval_num; i++) {
+            cmaaeH += abs(Hist_cm[i]-Hist[i]);
+            cmareH += abs(Hist_cm[i]-Hist[i])/Hist[i];
+            cmaaeH_ml += abs(Hist_cm_ml[i]-Hist[i]);
+            cmareH_ml += abs(Hist_cm_ml[i]-Hist[i])/Hist[i];
+
+
+            cuaaeH += abs(Hist_cu[i]-Hist[i]);
+            cuareH += abs(Hist_cu[i]-Hist[i])/Hist[i];
+            cuaaeH_ml += abs(Hist_cu_ml[i]-Hist[i]);
+            cuareH_ml += abs(Hist_cu_ml[i]-Hist[i])/Hist[i];
+
+            tsaaeH += abs(Hist_ts[i]-Hist[i]);
+            tsareH += abs(Hist_ts[i]-Hist[i])/Hist[i];
+            tsaaeH_ml += abs(Hist_ts_ml[i]-Hist[i]);
+            tsareH_ml += abs(Hist_ts_ml[i]-Hist[i])/Hist[i];
+
+            esaaeH += abs(Hist_es[i]-Hist[i]);
+            esareH += abs(Hist_es[i]-Hist[i])/Hist[i];
+            esaaeH_ml += abs(Hist_es_ml[i]-Hist[i]);
+            esareH_ml += abs(Hist_es_ml[i]-Hist[i])/Hist[i];
+
+            preaaeH += abs(Hist_pre[i]-Hist[i]);
+            preareH += abs(Hist_pre[i]-Hist[i])/Hist[i];
+            preaaeH_ml += abs(Hist_pre_ml[i]-Hist[i]);
+            preareH_ml += abs(Hist_pre_ml[i]-Hist[i])/Hist[i];
+        }
+        cmaae_list[i] = cmaae/truth_frequency.size();
+        cmare_list[i] = cmare/truth_frequency.size();
+        cmaae_list_ml[i] = cmaae_ml/truth_frequency.size();
+        cmare_list_ml[i] = cmare_ml/truth_frequency.size();
+
+        cuaae_list[i] = cuaae/truth_frequency.size();
+        cuare_list[i] = cuare/truth_frequency.size();
+        cuaae_list_ml[i] = cuaae_ml/truth_frequency.size();
+        cuare_list_ml[i] = cuare_ml/truth_frequency.size();
+
+        Tsaae_list[i] = tsaae/truth_frequency.size();
+        Tsare_list[i] = tsare/truth_frequency.size();
+        Tsaae_list_ml[i] = tsaae_ml/truth_frequency.size();
+        Tsare_list_ml[i] = tsare_ml/truth_frequency.size();
+
+        esaae_list[i] = esaae/truth_frequency.size();
+        esare_list[i] = esare/truth_frequency.size();
+        esaae_list_ml[i] = esaae_ml/truth_frequency.size();
+        esare_list_ml[i] = esare_ml/truth_frequency.size();
+
+        preaae_list[i] = preaae/truth_frequency.size();
+        preare_list[i] = preare/truth_frequency.size();
+        preaae_list_ml[i] = preaae_ml/truth_frequency.size();
+        preare_list_ml[i] = preare_ml/truth_frequency.size();
+
+        /*
+         * Dist
+         */
+        cmaaeH_list[i] = cmaaeH/interval_num;
+        cmareH_list[i] = cmareH/interval_num;
+        cmaaeH_list_ml[i] = cmaaeH_ml/interval_num;
+        cmareH_list_ml[i] = cmareH_ml/interval_num;
+
+        cuaaeH_list[i] = cuaaeH/interval_num;
+        cuareH_list[i] = cuareH/interval_num;
+        cuaaeH_list_ml[i] = cuaaeH_ml/interval_num;
+        cuareH_list_ml[i] = cuareH_ml/interval_num;
+
+        tsaaeH_list[i] = tsaaeH/interval_num;
+        tsareH_list[i] = tsareH/interval_num;
+        tsaaeH_list_ml[i] = tsaaeH_ml/interval_num;
+        tsareH_list_ml[i] = tsareH_ml/interval_num;
+
+
+        esaaeH_list[i] = esaaeH/interval_num;
+        esareH_list[i] = esareH/interval_num;
+        esaaeH_list_ml[i] = esaaeH_ml/interval_num;
+        esareH_list_ml[i] = esareH_ml/interval_num;
+
+        preaaeH_list[i] = preaaeH/interval_num;
+        preareH_list[i] = preareH/interval_num;
+        preaaeH_list_ml[i] = preaaeH_ml/interval_num;
+        preareH_list_ml[i] = preareH_ml/interval_num;
         print_H_all();
     }
     // print_aae_are_all();
-    // print_H_aae_are_all();
+    print_H_aae_are_all();
 
 
 }

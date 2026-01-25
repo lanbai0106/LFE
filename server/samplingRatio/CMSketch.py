@@ -21,7 +21,7 @@ keys_10 = set()
 keys_50 = set()
 keys = set()
 cnt = 0
-with open("../../cpu/data/datacenter.txt", "r", encoding="utf-8") as f:
+with open("../../cpu/data/mawi.txt", "r", encoding="utf-8") as f:
     for line in f:
         parts = line.strip().split()
         if len(parts) >= 2:
