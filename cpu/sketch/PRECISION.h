@@ -75,7 +75,7 @@ struct PRECISION {
             }
         }
         if(!flag) {
-            double log2_value = std::log2(minn);  // 计算 log2(v)
+            double log2_value = std::log2(minn);
             int rounded_up = std::ceil(log2_value);
             new_val = 1 << rounded_up;
             if(rd() % new_val == 0) {

@@ -12,9 +12,7 @@ double Tsare_list_ml[10], cmare_list_ml[10], precare_list_ml[10], cuare_list_ml[
 
 double tsaaeH_list_ml[10], cmaaeH_list_ml[10], precaaeH_list_ml[10], cuaaeH_list_ml[10], esaaeH_list_ml[10],preaaeH_list_ml[10];
 double tsareH_list_ml[10], cmareH_list_ml[10], precareH_list_ml[10], cuareH_list_ml[10], esareH_list_ml[10],preareH_list_ml[10];
-// std::random_device rd; // 获取随机设备
-// std::mt19937 gen(rd()); // 初始化随机引擎
-// std::uniform_int_distribution<> dis(0, std::numeric_limits<int>::max());
+
 int interval_num = 9;
 int Hist[10];
 int Hist_ts[10];
