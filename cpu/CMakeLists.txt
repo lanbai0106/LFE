@@ -20,5 +20,6 @@ add_executable(
         sketch/CUSketch.h
         tool/Parameters_main.h
         tool/Parameters_sample_ratio.h
+        report/report_thr.h
 
 )

@@ -20,7 +20,7 @@ keys_10 = set()
 keys_50 = set()
 keys = set()
 cnt = 0
-with open("../../cpu/data/CAIDA16.txt", "r", encoding="utf-8") as f:
+with open("../../cpu/data/CAIDA19.txt", "r", encoding="utf-8") as f:
     for line in f:
         parts = line.strip().split()
         if len(parts) >= 2:
@@ -66,13 +66,13 @@ def get_best_params(X, y):
                 sum1 = 0
                 for (x1, x2, x3), yi in zip(X, y):
                     y_hat = min(x1 / a, x2 / b, x3 / c)
-                    if yi > y_hat:
-                        sum1 += 1
-                    else:
-                        total_error += (y_hat - yi) / yi
-                    # total_error += abs(yi - y_hat)/yi
-                if sum1 > 100:
-                    total_error = float('inf')
+                    # if yi > y_hat:
+                    #     sum1 += 1
+                    # else:
+                    #     total_error += (y_hat - yi) / yi
+                    total_error += abs(yi - y_hat)/yi
+                # if sum1 > 100:
+                #     total_error = float('inf')
 
                 if total_error < best_error:
                     best_error = total_error
