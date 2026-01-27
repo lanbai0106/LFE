@@ -15,7 +15,7 @@ double tsareH_list_ml[10], cmareH_list_ml[10], precareH_list_ml[10], cuareH_list
 // std::random_device rd; // 获取随机设备
 // std::mt19937 gen(rd()); // 初始化随机引擎
 // std::uniform_int_distribution<> dis(0, std::numeric_limits<int>::max());
-int interval_num = 8;
+int interval_num = 9;
 int Hist[10];
 int Hist_ts[10];
 int Hist_cm[10];
@@ -48,11 +48,12 @@ void update_H(int v,int* a) {
     if(v == 1) a[0]++;
     if(v == 11) a[1]++,a[0]--;
     if(v == 101) a[2]++,a[1]--;
-    if(v == 1001) a[3]++,a[2]--;
-    if(v == 2001) a[4]++,a[3]--;
-    if(v == 3001) a[5]++,a[4]--;
-    if(v == 4001) a[6]++,a[5]--;
-    if(v == 5001) a[7]++,a[6]--;
+    if(v == 501) a[3]++,a[2]--;
+    if(v == 1001) a[4]++,a[3]--;
+    if(v == 1501) a[5]++,a[4]--;
+    if(v == 2001) a[6]++,a[5]--;
+    if(v == 3001) a[7]++,a[6]--;
+    if(v == 4001) a[8]++,a[7]--;
 }
 
 void print_H(int tmp[]) {

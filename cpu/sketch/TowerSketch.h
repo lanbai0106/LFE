@@ -35,7 +35,7 @@ struct TowerSketch {
                 a[i][hashid[i]] += 1 ;
                 v.push_back(a[i][hashid[i]]);
             }else {
-                v.push_back(9999999);
+                v.push_back(99999999);
             }
 
         }

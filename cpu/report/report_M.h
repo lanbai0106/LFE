@@ -1,5 +1,5 @@
 void report_M(vector<uint32_t> pac_list,Object obj) {
-    int left = 1, right = 2;
+    int left = 3, right = 4;
     int M_lsit[6] = {100,200,300,400,500};
     double heavy_ratio = 0.3;
 
@@ -28,7 +28,7 @@ void report_M(vector<uint32_t> pac_list,Object obj) {
 
         double tsaaeH_ml = 0, cmaaeH_ml = 0, precaaeH_ml = 0, cuaaeH_ml = 0, esaaeH_ml = 0, preaaeH_ml = 0;
         double tsareH_ml = 0, cmareH_ml = 0, precareH_ml = 0, cuareH_ml = 0, esareH_ml = 0, preareH_ml = 0;
-
+        // cout << obj.TS_a << " " << obj.TS_b << " " <<  obj.TS_c << " " << obj.CM_a << " " << obj.CM_b << " " << obj.CM_c <<  endl;
         // TS
         int m = memory/k;
         auto ts = new TowerSketch(m,k,obj.TS_a,obj.TS_b,obj.TS_c);
@@ -56,52 +56,64 @@ void report_M(vector<uint32_t> pac_list,Object obj) {
              // TS
             if(ifTS) {
                 auto results = ts->insert( pac_list[now_pac]);
-                sort(results.begin(),results.end());
-                update_H(results[0],Hist_ts);
+                auto results_1 = results;
+                sort(results_1.begin(),results_1.end());
+                update_H(results_1[0],Hist_ts);
 
                 int ts_ml = 1e9;
-                if(results[2] - results[0] > 3000 && results[0] < 2000) {
+                // cout << obj.TS_a << " " << obj.TS_b << " " << obj.TS_c <<  endl;
+                bool fl = false;
+                if(results_1[2]==99999999) {
+                    if(results_1[1]-results_1[0] > 3000) fl = true;
+                    else fl = false;
+                }else {
+                    if(results_1[2] - results_1[0] > 3000) fl = true;
+                    else fl = false;
+                }
+                if(fl) {
                     ts_ml = min(results[0]/obj.TS_a,results[1]/obj.TS_b);
                     ts_ml = min(ts_ml,int(results[2]/obj.TS_c));
-                    if(ts_ml == results[0]) {
-                        update_H(results[0],Hist_ts_ml);
+                    if(ts_ml == results_1[0]) {
+                        update_H(results_1[0],Hist_ts_ml);
                     }
                 }else {
-                    update_H(results[0],Hist_ts_ml);
+                    update_H(results_1[0],Hist_ts_ml);
                 }
             }
             //CM
             if(ifCM) {
                 auto results = cm->insert( pac_list[now_pac],1);
-                sort(results.begin(),results.end());
-                update_H(results[0],Hist_cm);
+                auto results_1 = results;
+                sort(results_1.begin(),results_1.end());
+                update_H(results_1[0],Hist_cm);
                 // CM_ml no
                 int cm_ml = 1e9;
-                if(results[2] - results[0] > 3000 && results[0] < 3000) {
+                if(results_1[2] - results_1[0] > 3000) {
                     cm_ml = min(results[0]/obj.CM_a,results[1]/obj.CM_b);
                     cm_ml = min(cm_ml,int(results[2]/obj.CM_c));
-                    if(cm_ml == results[0]) {
-                        update_H(results[0],Hist_cm_ml);
+                    if(cm_ml == results_1[0]) {
+                        update_H(results_1[0],Hist_cm_ml);
                     }
                 }else {
-                    update_H(results[0],Hist_cm_ml);
+                    update_H(results_1[0],Hist_cm_ml);
                 }
             }
             //CU
             if(ifCU) {
                 auto results = cu->insert( pac_list[now_pac],1);
-                sort(results.begin(),results.end());
-                update_H(results[0],Hist_cu);
+                auto results_1 = results;
+                sort(results_1.begin(),results_1.end());
+                update_H(results_1[0],Hist_cu);
 
                 int cu_ml = 1e9;
-                if(results[2] - results[0] > 3000 && results[0] < 3000) {
+                if(results_1[2] - results_1[0] > 3000) {
                     cu_ml = min(results[0]/obj.CU_a,results[1]/obj.CU_b);
                     cu_ml = min(cu_ml,int(results[2]/obj.CU_c));
-                    if(cu_ml == results[0]) {
-                        update_H(results[0],Hist_cu_ml);
+                    if(cu_ml == results_1[0]) {
+                        update_H(results_1[0],Hist_cu_ml);
                     }
                 }else {
-                    update_H(results[0],Hist_cu_ml);
+                    update_H(results_1[0],Hist_cu_ml);
                 }
             }
 
@@ -114,19 +126,20 @@ void report_M(vector<uint32_t> pac_list,Object obj) {
                 }
                 if(results[0]!= -1) {
                     results.pop_back();
-                    sort(results.begin(),results.end());
+                    auto results_1 = results;
+                    sort(results_1.begin(),results_1.end());
 
                     update_H(results[0],Hist_es);
 
                     int es_ml = 1e9;
-                    if(results[2] - results[0] > 1000 && results[0] < 1000) {
+                    if(results_1[2] - results_1[0] > 1000) {
                         es_ml = min(results[0]/obj.ES_a,results[1]/obj.ES_b);
                         es_ml = min(es_ml,int(results[2]/obj.ES_c));
-                        if(es_ml == results[0]) {
-                            update_H(results[0],Hist_es_ml);
+                        if(es_ml == results_1[0]) {
+                            update_H(results_1[0],Hist_es_ml);
                         }
                     }else {
-                        update_H(results[0],Hist_es_ml);
+                        update_H(results_1[0],Hist_es_ml);
                     }
                 }
             }
@@ -139,19 +152,20 @@ void report_M(vector<uint32_t> pac_list,Object obj) {
                 }
                 if(results[0]!= -1) {
                     results.pop_back();
-                    sort(results.begin(),results.end());
+                    auto results_1 = results;
+                    sort(results_1.begin(),results_1.end());
 
                     update_H(results[0],Hist_pre);
 
                     int pre_ml = 1e9;
-                    if(results[2] - results[0] > 1000 && results[0] < 2000) {
+                    if(results_1[2] - results_1[0] > 1000) {
                         pre_ml = min(results[0]/obj.PRE_a,results[1]/obj.PRE_b);
                         pre_ml = min(pre_ml,int(results[2]/obj.PRE_c));
-                        if(pre_ml == results[0]) {
-                            update_H(results[0],Hist_pre_ml);
+                        if(pre_ml == results_1[0]) {
+                            update_H(results_1[0],Hist_pre_ml);
                         }
                     }else {
-                        update_H(results[0],Hist_pre_ml);
+                        update_H(results_1[0],Hist_pre_ml);
                     }
                 }
             }
@@ -281,7 +295,7 @@ void report_M(vector<uint32_t> pac_list,Object obj) {
         print_H_all();
     }
     // print_aae_are_all();
-    print_H_aae_are_all();
+    // print_H_aae_are_all();
 
 
 }
