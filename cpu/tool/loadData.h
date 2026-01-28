@@ -11,11 +11,11 @@ const int MAX_INSERT_PACKAGE = 3e7;
 int packetnum;
 struct Object {
     vector<uint32_t> pac_list;
-    double CM_a,CM_b,CM_c;
-    double CU_a,CU_b,CU_c;
-    double TS_a,TS_b,TS_c;
-    double ES_a,ES_b,ES_c;
-    double PRE_a,PRE_b,PRE_c;
+    int CM_a,CM_b,CM_c;
+    int CU_a,CU_b,CU_c;
+    int TS_a,TS_b,TS_c;
+    int ES_a,ES_b,ES_c;
+    int PRE_a,PRE_b,PRE_c;
 };
 uint32_t convertIPv4ToUint32(char* ipAddress) {
     uint32_t result = 0;

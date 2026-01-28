@@ -5,6 +5,12 @@ void report_thr(vector<uint32_t> pac_list,Object obj) {
 
     int k = 3;
     bool ifTS = 1, ifCM = 1, ifES = 1, ifCU = 1, ifPRE = 1;
+    int now_pac = 0;
+    while (now_pac < packetnum) {
+        truth_frequency[pac_list[now_pac]]++;
+        update_H(truth_frequency[pac_list[now_pac]],Hist);
+        now_pac++;
+    }
     for(int i = left;i < right;i++) {
 
         cout <<  "i = " << i<< endl;
@@ -37,53 +43,124 @@ void report_thr(vector<uint32_t> pac_list,Object obj) {
         // TS
         if(ifTS) {
             int now_pac = 0;
-            clock_t start = clock();
+
             while (now_pac < packetnum) {
                 ts->insert( pac_list[now_pac]);
+                now_pac++;
+            }
+            clock_t start = clock();
+            for(auto kv : truth_frequency) {
+                uint32_t key = kv.first;
+                ts->query(key);
             }
             clock_t end = clock();
-            cout << "TS thr: " << double(packetnum) / ((double)(end - start)/ CLOCKS_PER_SEC) / 1000000 << endl;
+
+            cout << "TS thr: " << double(truth_frequency.size()) / ((double)(end - start)/ CLOCKS_PER_SEC) / 1000000 << endl;
+
+            clock_t start1 = clock();
+            for(auto kv : truth_frequency) {
+                uint32_t key = kv.first;
+                ts->query_ml(key);
+            }
+            clock_t end1 = clock();
+
+            cout << "TS-ml thr: " << double(truth_frequency.size()) / ((double)(end1 - start1)/ CLOCKS_PER_SEC) / 1000000 << endl;
         }
         //CM
         if(ifCM) {
             int now_pac = 0;
-            clock_t start = clock();
             while (now_pac < packetnum) {
                 cm->insert( pac_list[now_pac],1);
+                now_pac++;
+            }
+            clock_t start = clock();
+            for(auto kv : truth_frequency) {
+                uint32_t key = kv.first;
+                cm->query(key);
             }
             clock_t end = clock();
-            cout << "CM thr: " << double(packetnum) / ((double)(end - start)/ CLOCKS_PER_SEC) / 1000000 << endl;
+
+            cout << "CM thr: " << double(truth_frequency.size()) / ((double)(end - start)/ CLOCKS_PER_SEC) / 1000000 << endl;
+
+            clock_t start1 = clock();
+            for(auto kv : truth_frequency) {
+                uint32_t key = kv.first;
+                cm->query_ml(key);
+            }
+            clock_t end1 = clock();
+            cout << "CM-ml thr: " << double(truth_frequency.size()) / ((double)(end1 - start1)/ CLOCKS_PER_SEC) / 1000000 << endl;
 
         }
         //CU
         if(ifCU) {
             int now_pac = 0;
-            clock_t start = clock();
             while (now_pac < packetnum) {
                 cu->insert( pac_list[now_pac],1);
+                now_pac++;
+            }
+            clock_t start = clock();
+            for(auto kv : truth_frequency) {
+                uint32_t key = kv.first;
+                cu->query(key);
             }
             clock_t end = clock();
-            cout << "CU thr: " << double(packetnum) / ((double)(end - start)/ CLOCKS_PER_SEC) / 1000000 << endl;
+
+            cout << "CU thr: " << double(truth_frequency.size()) / ((double)(end - start)/ CLOCKS_PER_SEC) / 1000000 << endl;
+
+            clock_t start1 = clock();
+            for(auto kv : truth_frequency) {
+                uint32_t key = kv.first;
+                cu->query_ml(key);
+            }
+            clock_t end1 = clock();
+            cout << "CU-ml thr: " << double(truth_frequency.size()) / ((double)(end1 - start1)/ CLOCKS_PER_SEC) / 1000000 << endl;
         }
         //   ES
         if(ifES) {
             int now_pac = 0;
-            clock_t start = clock();
             while (now_pac < packetnum) {
-                es->insert( pac_list[now_pac] );
+                es->insert( pac_list[now_pac]);
+                now_pac++;
+            }
+            clock_t start = clock();
+            for(auto kv : truth_frequency) {
+                uint32_t key = kv.first;
+                es->query(key);
             }
             clock_t end = clock();
-            cout << "CU thr: " << double(packetnum) / ((double)(end - start)/ CLOCKS_PER_SEC) / 1000000 << endl;
+
+            cout << "ES thr: " << double(truth_frequency.size()) / ((double)(end - start)/ CLOCKS_PER_SEC) / 1000000 << endl;
+
+            clock_t start1 = clock();
+            for(auto kv : truth_frequency) {
+                uint32_t key = kv.first;
+                es->query_ml(key);
+            }
+            clock_t end1 = clock();
+            cout << "ES-ml thr: " << double(truth_frequency.size()) / ((double)(end1 - start1)/ CLOCKS_PER_SEC) / 1000000 << endl;
         }
         //PRE
         if(ifPRE) {
             int now_pac = 0;
-            clock_t start = clock();
             while (now_pac < packetnum) {
-                pre->insert( pac_list[now_pac] );
+                pre->insert( pac_list[now_pac]);
+                now_pac++;
+            }
+            clock_t start = clock();
+            for(auto kv : truth_frequency) {
+                uint32_t key = kv.first;
+                pre->query(key);
             }
             clock_t end = clock();
-            cout << "CU thr: " << double(packetnum) / ((double)(end - start)/ CLOCKS_PER_SEC) / 1000000 << endl;
+            cout << "pre thr: " << double(truth_frequency.size()) / ((double)(end - start)/ CLOCKS_PER_SEC) / 1000000 << endl;
+
+            clock_t start1 = clock();
+            for(auto kv : truth_frequency) {
+                uint32_t key = kv.first;
+                pre->query_ml(key);
+            }
+            clock_t end1 = clock();
+            cout << "pre-ml thr: " << double(truth_frequency.size()) / ((double)(end1 - start1)/ CLOCKS_PER_SEC) / 1000000 << endl;
 
         }
 

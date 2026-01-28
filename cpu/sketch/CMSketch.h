@@ -3,8 +3,9 @@ struct CMSketch {
     uint32_t **a;
     BOBHash32 **hash;
     double thre_1,thre_2;
-    double p_a,p_b,p_c;
-    CMSketch(int _m, int _hnum, int _thre_1, int _thre_2,double p_a,double p_b,double p_c) : m(_m), hnum(_hnum), thre_1(_thre_1), thre_2(_thre_2),p_a(p_a), p_b(p_b), p_c(p_c) {
+    int p_a,p_b,p_c;
+    int results[4];
+    CMSketch(int _m, int _hnum, int _thre_1, int _thre_2,int p_a,int p_b,int p_c) : m(_m), hnum(_hnum), thre_1(_thre_1), thre_2(_thre_2),p_a(p_a), p_b(p_b), p_c(p_c) {
 
         a = new uint32_t*[hnum];
         for (int i = 0; i < _hnum; i++) {
@@ -50,16 +51,22 @@ struct CMSketch {
         int hashid[hnum];
         for (int i = 0; i < hnum; i++) hashid[i] = hash[i]->run((char *)&key, 4) % m;
 
-        vector<int> results;
+
+        int minn = 1e9,maxn = -1;
         for (int i = 0; i < hnum; i++) {
-            results.push_back(a[i][hashid[i]]);
+            results[i] = a[i][hashid[i]];
+            if(a[i][hashid[i]] < minn) {
+                minn = a[i][hashid[i]];
+            }
+            if(a[i][hashid[i]] > maxn) {
+                maxn = a[i][hashid[i]];
+            }
         }
 
-        sort(results.begin(), results.end());
         int ans = 1e9;
-        if(results[2] - results[0] > thre_1 && results[0] < thre_2) {
-            ans = min(results[0]/p_a,results[1]/p_b);
-            ans = min(ans,int(results[2]/p_c));
+        if(maxn - minn > thre_1 && minn < thre_2) {
+            ans = min(results[0]>>p_a,results[1]>>p_b);
+            ans = min(ans,int(results[2]>>p_c));
         }else {
             ans = results[0];
         }
