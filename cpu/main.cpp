@@ -25,7 +25,7 @@
 #include "sketch/PRECISION.h"
 
 
-#include "report/report_M.h"
+#include "report/report_Hist.h"
 #include "report/report_thr.h"
 #include <filesystem>
 using namespace std;

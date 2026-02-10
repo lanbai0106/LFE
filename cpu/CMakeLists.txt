@@ -11,7 +11,7 @@ add_executable(
         LFE main.cpp
         tool/BOBHash32.h
         tool/loadData.h
-        report/report_M.h
+        report/report_Hist.h
         tool/common.h
         sketch/TowerSketch.h
         sketch/ElasticSketch.h
