@@ -1,4 +1,5 @@
 This project requires a C++11 or higher version. The command g++ -std=c++17 -O3 -o main main.cpp can be used for compilation.
+To compile the P4 code deployed, use the following command: `./p_4_build.sh`. After the code is compiled, you can check the resource usage by running: `./p4i.sh`. These commands allow you to build the code and monitor the resource usage.
 
 **Switch** refers to the code deployed on the programmable switch, while **cpu** contains its CPU version. **Server** refers to the method for training parameters on the server, with corresponding tests (in actual applications, testing is not required; only training parameters are needed).
 
