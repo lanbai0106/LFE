@@ -41,7 +41,7 @@ real_freq_50 = Counter(sample_pac_50)
 rows = 3
 
 
-powers = [2**k for k in range(0, 6)]  # 2^0 到 2^15
+powers = [2**k for k in range(0, 6)]  
 
 
 def get_best_params(X, y):
