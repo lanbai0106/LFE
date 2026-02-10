@@ -199,7 +199,7 @@ for secon in range(60):
             X_5.append(X)
             y_5.append(real_freq_5[item])
 
-    powers = [2**k for k in range(0, 6)]  # 2^0 到 2^15
+    powers = [2**k for k in range(0, 6)]  
 
     best_a_5 = None
     best_b_5 = None
