@@ -72,7 +72,7 @@ struct CUSketch {
             ans = min(results[0]>>p_a,results[1]>>p_b);
             ans = min(ans,int(results[2]>>p_c));
         }else {
-            ans = results[0];
+            ans = minn;
         }
         return ans;
     }
