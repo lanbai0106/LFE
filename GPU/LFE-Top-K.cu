@@ -158,7 +158,6 @@ uint32 updateCM(uint32* cm, uint32 width, uint32 x) {
     maxn = max2(maxn, cm_es3);
 
     if (maxn - minn > 3000 && minn < 3000) {
-        cm[2 * width + idx2]++;
 
         uint32 est0 = cm[idx0] >> p0;
         uint32 est1 = cm[width + idx1] >> p1;
