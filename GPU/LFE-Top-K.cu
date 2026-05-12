@@ -12,7 +12,7 @@
 
 using uint32 = uint32_t;
 
-const uint32 TOP_K = 500;
+const uint32 TOP_K = 4000;
 uint32 memory = 200;
 const uint32 CM_D = 3;
 const uint32 WIDTH = memory*1024*8/3/32;
